@@ -34,6 +34,8 @@ export default class Login extends Component {
                 this.props.history.push("/vendedor_home");
             }
             else if(res.data[0].id_rol==6){
+                //usuario: ruthlechuga.1997@gmail.com
+                //pass: 123456
                 this.props.history.push("/home");
             }
             else
