@@ -1,41 +1,62 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router} from "react-router-dom";
-import { makeStyles } from '@material-ui/core/styles';
+import { BrowserRouter as Router,Switch, Route, Link,useHistory } from "react-router-dom";
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import cl from '../images/clientes.jpg';
-import vn from '../images/ventas.png';
-import gr from '../images/graficas.jpg';
+import Button from '@material-ui/core/Button';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import IconButton from '@material-ui/core/IconButton';
 
 export default class Vendedor_home extends Component {
     constructor(props){
         super(props);
-        console.log(props);
+        //console.log(props);
     }
     render() {
+        const style={
+            back:{
+                float:"right"
+            }
+        }
         return (
+            
             <Router>
+                <nav className="navbar navbar-expand-lg navbar-light fixed-top">
+                    <div className="container">
+                        <Button
+                            size="large"
+                            title="Home"
+                            onClick={() => {
+                                this.props.history.push("/vendedor_home")
+                            }}
+                        >Grupo 8</Button>
+                        <IconButton aria-label="delete" style={style.back} onClick={()=>{
+                            
+                        }}>
+                            <ArrowBackIcon fontSize="large" />
+                        </IconButton>
+                    </div>
+                </nav>
                 <br/>
                 <br/>
                 <br/>
-                <br/>
-                <Carta_Clientes/>
+                <Carta_Clientes p={this.props}/>
                 <br/>
                 <Carta_Ventas/>
                 <br/>
                 <Carta_Reportes/>
+                <br/>
             </Router>
         );
     }
 }
 /*--------------------------------------------------------- cosas propias ---------------------------------------------------------*/
 
-function Carta_Clientes() {
+function Carta_Clientes(props) {
+    props=props.p
+    console.log(props);
     const styles={
         carta:{
             maxWidth: "80%",
@@ -46,12 +67,9 @@ function Carta_Clientes() {
         }
     }
     
-    const clientes=()=>{
-        console.log("presionado")
-    }
     return (
         <Card style={styles.carta}>
-          <CardActionArea onClick={clientes}>
+          <CardActionArea to="/clientes">
             <CardMedia
               component="img"
               style={styles.media}
@@ -82,12 +100,12 @@ function Carta_Ventas(){
         }
     }
     
-    const clientes=()=>{
+    const redirect=()=>{
         console.log("presionado")
     }
     return (
         <Card style={styles.carta}>
-          <CardActionArea onClick={clientes}>
+          <CardActionArea onClick={redirect}>
             <CardMedia
               component="img"
               style={styles.media}
@@ -119,12 +137,12 @@ function Carta_Reportes(){
         }
     }
     
-    const clientes=()=>{
+    const redirect=()=>{
         console.log("presionado")
     }
     return (
         <Card style={styles.carta}>
-          <CardActionArea onClick={clientes}>
+          <CardActionArea onClick={redirect}>
             <CardMedia
               component="img"
               style={styles.media}

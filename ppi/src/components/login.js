@@ -29,10 +29,12 @@ export default class Login extends Component {
         .then(res => {
             console.log(res)
             if(res.data[0].id_rol==1){ //usuario vendedor
-                this.props.history.push("components/vendedor_home");
+                //usuario: andyecarvajal@gmail.com
+                //pass: 12345678#
+                this.props.history.push("/vendedor_home");
             }
             else if(res.data[0].id_rol==6){
-                this.props.history.push("components/home");
+                this.props.history.push("/home");
             }
             else
                 alert('Los datos ingresados son incorrectos. Intente nuevamente.')
