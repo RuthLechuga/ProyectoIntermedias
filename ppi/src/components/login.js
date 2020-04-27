@@ -28,7 +28,10 @@ export default class Login extends Component {
         axios.post('https://proyectopi-server.herokuapp.com/login',params)
         .then(res => {
             console.log(res)
-            if(res.data.length==1){
+            if(res.data[0].id_rol==1){
+                this.props.history.push("components/vendedor_home");
+            }
+            else if(res.data[0].id_rol==6){
                 this.props.history.push("components/home");
             }
             else
