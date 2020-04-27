@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Link } from "react-router-dom";
+import { BrowserRouter as Router} from "react-router-dom";
 import axios from 'axios';
 
 export default class Login extends Component {
@@ -25,35 +25,41 @@ export default class Login extends Component {
             password: this.state.password
         }
 
-        axios.post('https://proyectopi-server.herokuapp.com/login',{params})
-        .then(res => {console.log(res)});
+        axios.post('https://proyectopi-server.herokuapp.com/login',params)
+        .then(res => {
+            console.log(res)
+            if(res.data.length==1){
+                this.props.history.push("components/home");
+            }
+            else
+                alert('Los datos ingresados son incorrectos. Intente nuevamente.')
+        });
     }
  
     render() {
         return (
             <Router>
-            <nav className="navbar navbar-expand-lg navbar-light fixed-top">
-                <div className="container">
-                    <Link className="navbar-brand" to={"/components/login"}>Grupo 8</Link>
+            <div className="auth-wrapper">
+                <div className="auth-inner">
+
+                    <h3>Iniciar Sesion {this.state.email}</h3>
+
+                    <div className="form-group">
+                        <label>Correo</label>
+                        <input type="email" className="form-control" name="email" placeholder="Enter email" onChange={this.myChangeHandler}/>
+                    </div>
+
+                    <div className="form-group">
+                        <label>Password</label>
+                        <input type="password" className="form-control" name="password" placeholder="Enter password" onChange={this.myChangeHandler}/>
+                    </div>
+
+                    <button className="btn btn-primary btn-block" onClick={this.login.bind(this)}>Iniciar Sesion</button>
+                    <p className="forgot-password text-right">
+                        Olvidaste tu <a href="#">password?</a>
+                    </p>
                 </div>
-            </nav>
-            
-            <h3>Iniciar Sesion {this.state.email}</h3>
-
-            <div className="form-group">
-                <label>Correo</label>
-                <input type="email" className="form-control" name="email" placeholder="Enter email" onChange={this.myChangeHandler}/>
             </div>
-
-            <div className="form-group">
-                <label>Password</label>
-                <input type="password" className="form-control" name="password" placeholder="Enter password" onChange={this.myChangeHandler}/>
-            </div>
-
-            <button className="btn btn-primary btn-block" onClick={this.login.bind(this)}>Iniciar Sesion</button>
-            <p className="forgot-password text-right">
-                Olvidaste tu <a href="#">password?</a>
-            </p>
             </Router>
         );
     }
