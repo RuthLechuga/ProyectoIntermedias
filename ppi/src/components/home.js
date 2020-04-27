@@ -11,8 +11,8 @@ export default class Home extends Component {
                     <div class="col-sm-3">
                         <div class="card text-white bg-dark">
                         <div class="card-body">
-                            <h5 class="card-title">Administrar sedes</h5>
-                            <p class="card-text">Registrar, eliminar y modificar información de sedes existentes</p>
+                            <h5 className="card-title">Administrar sedes</h5>
+                            <p className="card-text">Registrar, eliminar y modificar información de sedes existentes</p>
                             <a href="#" class="btn btn-light"><Link to="sedes" className="link">Ver información</Link></a>
                         </div>
                         </div>
