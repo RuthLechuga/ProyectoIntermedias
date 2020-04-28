@@ -43,17 +43,18 @@ export default class Vendedor_clientes extends Component {
         ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
         ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
     };
-    
+    usuario;
     constructor(props){
         super(props);
+        this.usuario=JSON.parse(localStorage.getItem('usuario'))
         this.state = {
             columns: [
-                { title: 'ID', field: 'id_cliente',editable:'never' },
+                { title: 'ID', field: 'id_cliente', editable:'never' },
                 { title: 'Nombre', field: 'nombre' },
                 { title: 'NIT', field: 'nit' },
                 { title: 'DPI', field: 'dpi' },
                 { title: 'Direccion', field: 'direccion' },
-                { title: 'Sede', field: 'id_sede' }
+                { title: 'Sede', field: 'id_sede', editable:'never' }
             ],
             data:[]
         }
@@ -105,6 +106,7 @@ export default class Vendedor_clientes extends Component {
                         new Promise((resolve) => {
                             setTimeout(() => {
                                 resolve();
+                                newData.id_sede=this.usuario.id_sede;
                                 axios.post("https://proyectopi-server.herokuapp.com/cliente",newData).then(res=>{
                                     console.log(res.data.insertId)
                                     newData.id_cliente=res.data.insertId;

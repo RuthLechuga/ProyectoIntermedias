@@ -9,6 +9,7 @@ import Sedes from "./components/sedes";
 
 import Vendedor_home from "./components/vendedor_home";
 import Vendedor_clientes from "./components/vendedor_clientes";
+import Vendedor_reportes from "./components/vendedor_reportes";
 
 function App() {
   return (<Router>
@@ -20,6 +21,7 @@ function App() {
                       <Route path="/sedes" component={Sedes} />
                       <Route exact path="/vendedor_home" component={Vendedor_home} />
                       <Route exact path="/vendedor_home/clientes" component={Vendedor_clientes} />
+                      <Route exact path="/vendedor_home/reportes" component={Vendedor_reportes} />
                     </Switch>
               </div>
           </Router>
