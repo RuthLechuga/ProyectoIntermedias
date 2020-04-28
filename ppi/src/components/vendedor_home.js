@@ -54,7 +54,7 @@ export default class Vendedor_home extends Component {
                 <br/>
                 <br/>
                 <br/>
-                <Carta_Ventas/>
+                <Carta_Ventas p={this.props}/>
                 <br/>
                 <Carta_Clientes p={this.props}/>
                 <br/>
@@ -104,6 +104,7 @@ function Carta_Clientes(props) {
     );
 }
 function Carta_Ventas(props){
+    props=props.p
     const styles={
         carta:{
             maxWidth: "80%",
@@ -119,7 +120,9 @@ function Carta_Ventas(props){
     }
     return (
         <Card style={styles.carta}>
-          <CardActionArea onClick={redirect}>
+          <CardActionArea onClick={()=>{
+              props.history.push("/vendedor_home/ventas")
+          }}>
             <CardMedia
               component="img"
               style={styles.media}

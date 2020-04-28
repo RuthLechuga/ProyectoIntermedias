@@ -22,10 +22,10 @@ export default class Vendedor_reportes extends Component {
             }
         }
         const marksG=[{value:0,label:"Barras"},{value:1,label:"Lineas"},{value:2,label:"Dona"}]
-        const [grafica, setValue] = React.useState(0);
-        const graph =(event,newValue)=>{
-            setValue(newValue);
-        }
+        //const [grafica, setValue] = React.useState(0);
+        //const graph =(event,newValue)=>{
+        //    setValue(newValue);
+        //}
 
         return (
             <Router>
@@ -64,7 +64,7 @@ export default class Vendedor_reportes extends Component {
                         Tipo de gráfica
                     </Typography>
                     <Slider
-                        onChange={graph}
+                        //onChange={graph}
                         track={false}
                         defaultValue={0}
                         aria-labelledby="track-false-slider"
@@ -74,7 +74,6 @@ export default class Vendedor_reportes extends Component {
                         max={2}
                     />
                 </div>
-                <pre>{grafica}</pre>
             </Router>
         )
     }
