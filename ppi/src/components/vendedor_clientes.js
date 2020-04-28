@@ -123,7 +123,6 @@ export default class Vendedor_clientes extends Component {
                                 if (oldData) {
                                     const cambiar=newData
                                     cambiar.id_cliente=oldData.id_cliente
-                                    console.log(cambiar)
                                     axios.put("https://proyectopi-server.herokuapp.com/cliente",cambiar).then(res=>{
                                         this.setState((prevState) => {
                                             const data = [...prevState.data];
@@ -138,10 +137,10 @@ export default class Vendedor_clientes extends Component {
                         new Promise((resolve) => {
                             setTimeout(() => {
                                 resolve();
-                                const quitar={}
-                                quitar.id_cliente=oldData.id_cliente;
+                                const quitar={data:{"id_cliente": oldData.id_cliente}}
                                 axios.delete("https://proyectopi-server.herokuapp.com/cliente",quitar).then(res=>{
-                                    console.log(res)
+                                    console.log(quitar)
+                                    console.log(res.data)
                                     this.setState((prevState) => {
                                         const data = [...prevState.data];
                                         data.splice(data.indexOf(oldData), 1);
