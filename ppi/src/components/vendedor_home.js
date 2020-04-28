@@ -6,7 +6,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import IconButton from '@material-ui/core/IconButton';
 
 export default class Vendedor_home extends Component {
@@ -32,10 +32,8 @@ export default class Vendedor_home extends Component {
                                 this.props.history.push("/vendedor_home")
                             }}
                         >Grupo 8</Button>
-                        <IconButton aria-label="delete" style={style.back} onClick={()=>{
-                            
-                        }}>
-                            <ArrowBackIcon fontSize="large" />
+                        <IconButton aria-label="delete" style={style.back} >
+                            <ExitToAppIcon fontSize="large" />
                         </IconButton>
                     </div>
                 </nav>
@@ -69,7 +67,9 @@ function Carta_Clientes(props) {
     
     return (
         <Card style={styles.carta}>
-          <CardActionArea to="/clientes">
+          <CardActionArea onClick={()=>{
+              props.history.push("/vendedor_home/clientes")
+          }}>
             <CardMedia
               component="img"
               style={styles.media}
