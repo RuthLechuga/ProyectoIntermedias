@@ -18,6 +18,9 @@ import TableRow from '@material-ui/core/TableRow';
 import Grid from '@material-ui/core/Grid';
 import Switch from '@material-ui/core/Switch';
 
+import DeleteIcon from '@material-ui/icons/Delete';
+import TextField from '@material-ui/core/TextField';
+
 export default class Vendedor_ventas extends Component {
     constructor(props){
         super(props);
@@ -47,6 +50,8 @@ export default class Vendedor_ventas extends Component {
             rowsPerPage:10,
             envio:false,
             subtotal:0.0,
+            descuento:0,
+            selected:[]
         }
         let sub=0;
         for(let item of t.rows)
@@ -89,19 +94,65 @@ export default class Vendedor_ventas extends Component {
             res=this.state.subtotal*1.1
         else
             res=this.state.subtotal
-        return "Q "+parseFloat(res).toFixed(2)
+        return "Q "+parseFloat(res-this.state.descuento).toFixed(2)
     }
     submit=()=>{
         console.log("Se ha realizado la venta exitosamente de Q "+this.getTotal())
     }
+    onDelete(event,row){
+        const selected=this.state.rows.indexOf(row)
+        let rows= [];
+        for(let item of this.state.rows.slice(0, selected))
+            rows.push(item)
+        for(let item of this.state.rows.slice(selected + 1))
+            rows.push(item)
+        let sub=0;
+        for(let item of rows)
+            sub+=item.total
+        const subtotal=sub.toFixed(2)
+        //console.log(selected)
+        //console.log(rows)
+        this.setState({rows,subtotal})
+    }
+    onDiscount=(event)=>{
+        let text=event.target.value
+        if(text.charAt(text.length-1)=="%"){//es porcentaje
+            let numero=text.substring(0,text.length-1)
+            if(!isNaN(numero)){
+                numero=(+numero)/100
+                console.log(numero)
+                
+                this.setState({descuento:numero*this.state.subtotal})
+            }
+            else{
+                console.log("NO ES PORCENTAJE")
+            }
+        }
+        else{//es numero
+            if(!isNaN(text)){
+                text=+text
+                console.log(text)
+                this.setState({descuento:text})
+            }
+            else{
+                console.log("NO ES numero")
+            }
+        }
+
+    }
     render() {
         const styles={
+            head: {
+                backgroundColor: "navy",
+                color: "white",
+            },
             back:{
                 float:"right"
             },
             paper:{
                 width:"50%",
-                paddingLeft:"10px"
+                paddingLeft:"5px",
+                paddingRight:"5px"
             },
             container:{
                 maxHeight:500
@@ -110,7 +161,8 @@ export default class Vendedor_ventas extends Component {
                 height:33
             },
             totales:{
-                textAlign:"right"
+                textAlign:"right",
+                backgroundColor:"navajowhite"
             },
             submit:{
                 margin:"auto", 
@@ -144,8 +196,10 @@ export default class Vendedor_ventas extends Component {
                             <Table stickyHeader aria-label="sticky table" size={'small'}>
                                 <TableHead>
                                     <TableRow>
+                                        <TableCell style={styles.head}>
+                                        </TableCell>
                                         {this.state.columnas.map((column) => (
-                                            <TableCell key={column.id} align={column.align} >
+                                            <TableCell style={styles.head} key={column.id} align={column.align} >
                                                 {column.label}
                                             </TableCell>
                                         ))}
@@ -158,11 +212,16 @@ export default class Vendedor_ventas extends Component {
                                                 {this.state.columnas.map((column)=>{
                                                     const value =row[column.id];
                                                     return(
-                                                        <TableCell key={column.id} align={column.align}>
+                                                        <TableCell key={column.id} align={column.align} >
                                                             {column.format && typeof value === 'number' ? column.format(value) : value}
                                                         </TableCell>
                                                     );
                                                 })}
+                                                <TableCell>
+                                                    <IconButton aria-label="delete" onClick={(event)=>this.onDelete(event,row)}>
+                                                        <DeleteIcon fontSize="small" />
+                                                    </IconButton>
+                                                </TableCell>
                                             </TableRow>
                                         );
                                     })}
@@ -193,6 +252,16 @@ export default class Vendedor_ventas extends Component {
                             </Grid>
                             <Grid container spacing={2}>
                                 <Grid item xs={4}>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Paper>Descuento:</Paper>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <TextField style={styles.totales} defaultValue="0.00" size="small" inputProps={{style: { textAlign: "right" }}} onChange={this.onDiscount}/>
+                                </Grid>
+                            </Grid>
+                            <Grid container spacing={2}>
+                                <Grid item xs={4}>
                                     <Switch checked={this.state.envio} onChange={this.setDomicilio} />
                                 </Grid>
                                 <Grid item xs={4}>
@@ -202,6 +271,7 @@ export default class Vendedor_ventas extends Component {
                                     <Paper style={styles.totales}>{this.getEnvio()}</Paper>
                                 </Grid>
                             </Grid>
+                            
                             <Grid container spacing={2}>
                                 <Grid item xs={4}>
                                     
@@ -213,6 +283,7 @@ export default class Vendedor_ventas extends Component {
                                     <Paper style={styles.totales}>{this.getTotal()}</Paper>
                                 </Grid>
                             </Grid>
+                            <br/>
                         </div>
                     </Paper>
                     <p>holaaaaa</p>
