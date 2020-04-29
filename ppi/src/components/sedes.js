@@ -103,8 +103,6 @@ export default class Sedes extends Component {
         .then(res => {
             alert('Sede creada exitosamente');
         });
-
-        console.log('Hola Mundo :D');
     }
 
     render() {

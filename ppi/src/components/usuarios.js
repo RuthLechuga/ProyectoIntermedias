@@ -59,8 +59,7 @@ export default class Usuarios extends Component {
                 { title: 'CORREO', field:'correo'},
                 { title: 'PASSWORD', field:'password'}
             ],
-            selectedDate: new Date('2014-08-18T21:11:54'),
-            setSelectedDate: new Date('2014-08-18T21:11:54'),
+            date: new Date('2014-08-18T21:11:54'),
             data: [],
             dpi: '',
             nombre: '',
@@ -93,6 +92,20 @@ export default class Usuarios extends Component {
     };
 
     crear(event){
+        const params = {
+            dpi: this.state.dpi,
+            nombre: this.state.nombre,
+            fecha_nacimiento: this.state.date,
+            correo: this.state.correo,
+            password: this.state.password
+        }
+
+        axios.post('https://proyectopi-server.herokuapp.com/usuario',params)
+        .then(res => {
+            alert('Usuario creado exitosamente');
+        });
+
+        console.log(params)
     }
 
     render() {
@@ -182,8 +195,8 @@ export default class Usuarios extends Component {
                                 margin="normal"
                                 id="date-picker-dialog"
                                 label="Date picker dialog"
-                                format="MM/dd/yyyy"
-                                value={this.state.selectedDate}
+                                format="yyyy/MM/dd"
+                                value={this.state.date}
                                 onChange={this.handleDateChange}
                                 KeyboardButtonProps={{
                                     'aria-label': 'change date',
@@ -199,7 +212,13 @@ export default class Usuarios extends Component {
                         <input name="correo" type="text" class="form-control" placeholder="correo" aria-label="correo" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
                     </div>
                     
-
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Password</span>
+                        </div>
+                        <input name="password" type="text" class="form-control" placeholder="password" aria-label="password" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
+                    </div>
+                    
                     <br></br><br></br>
                     <Button onClick={this.crear.bind(this)} variant="contained" color="primary">Crear Usuario</Button>
                     <br></br><br></br><br></br>
