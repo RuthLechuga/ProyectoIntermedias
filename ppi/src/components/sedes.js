@@ -58,7 +58,7 @@ export default class Sedes extends Component {
             selectedMunicipio: 0,
             alias: '',
             direccion: '',
-            id_usuario: 2
+            id_usuario: localStorage.getItem('idUsuario')
         }
     }
 
@@ -83,6 +83,7 @@ export default class Sedes extends Component {
         });
 
         console.log(this.state.municipios);
+        console.log("id",localStorage.getItem('idUsuario'))
     }
 
     handleChange = (event) => {

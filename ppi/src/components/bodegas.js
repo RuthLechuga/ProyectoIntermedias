@@ -61,7 +61,7 @@ export default class Bodegas extends Component {
             selectedSedes: 0,
             nombre: '',
             estado: '',
-            id_usuario: 2,
+            id_usuario: localStorage.getItem('idUsuario'),
             checkedA: true
         }
     }

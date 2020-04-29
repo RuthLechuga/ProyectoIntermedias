@@ -28,6 +28,7 @@ export default class Login extends Component {
         axios.post('https://proyectopi-server.herokuapp.com/login',params)
         .then(res => {
             console.log(res)
+            localStorage.setItem('idUsuario', res.data[0].id_usuario);
             if(res.data[0].id_rol==1){ //usuario vendedor
                 //usuario: andyecarvajal@gmail.com
                 //pass: 12345678#
