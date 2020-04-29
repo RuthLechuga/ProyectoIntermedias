@@ -22,7 +22,7 @@ import Button from '@material-ui/core/Button';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import IconButton from '@material-ui/core/IconButton';
 
-export default class Sedes extends Component {
+export default class Bodegas extends Component {
 
     tableIcons = {
         Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -94,10 +94,8 @@ export default class Sedes extends Component {
             alias: this.state.alias,
             direccion: this.state.direccion,
             id_usuario: this.state.id_usuario,
-            id_municipio: this.state.selectedMunicipio
+            id_municipio: this.state.id_municipio
         }
-
-        console.log(params);
 
         axios.post('https://proyectopi-server.herokuapp.com/sede',params)
         .then(res => {
@@ -105,6 +103,9 @@ export default class Sedes extends Component {
         });
 
         console.log('Hola Mundo :D');
+        console.log(this.state.selectedMunicipio);
+        console.log(this.state.alias);
+        console.log(this.state.direccion)
     }
 
     render() {
@@ -132,7 +133,7 @@ export default class Sedes extends Component {
                 </nav>
                 <br></br><br></br><br></br><br></br>
                 <div>
-                    <h1 id='title'>Sede</h1>
+                    <h1 id='title'>Bodegas</h1>
                     <MaterialTable
                         icons={this.tableIcons}
                         title="Sedes existentes"
@@ -209,10 +210,10 @@ export default class Sedes extends Component {
                             {municipio.nombre}
                             </option>
                         ))}
-                    </select>
-                    <br></br><br></br>
-                    <Button onClick={this.crear.bind(this)} variant="contained" color="primary">Crear Sede</Button>
-                    <br></br><br></br><br></br>
+                        </select>
+                        <br></br><br></br>
+                        <Button onClick={this.crear.bind(this)} variant="contained" color="primary">Crear Sede</Button>
+                        <br></br><br></br><br></br>
                 </div>
             </Router>
         );

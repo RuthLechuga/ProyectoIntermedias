@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Link} from "react-router-dom";
 import Button from '@material-ui/core/Button';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import IconButton from '@material-ui/core/IconButton';
-import Sedes from "./sedes";
-import { BrowserRouter, Route } from 'react-router-dom'
 
 export default class Home extends Component {
     render() {
@@ -51,8 +49,8 @@ export default class Home extends Component {
                         <div class="card text-white bg-dark">
                         <div class="card-body">
                             <h5 class="card-title">Administrar usuarios</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="#" class="btn btn-light">Go somewhere</a>
+                            <p class="card-text">Registrar, eliminar y modificar información de usuarios existentes</p>
+                            <a href="usuarios" class="btn btn-light">Ver información</a>
                         </div>
                         </div>
                     </div>
@@ -60,8 +58,8 @@ export default class Home extends Component {
                         <div class="card text-white bg-dark">
                         <div class="card-body">
                             <h5 class="card-title">Administrar bodegas</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="#" class="btn btn-light">Go somewhere</a>
+                            <p class="card-text">Registrar, eliminar y modificar información de bodegas existentes</p>
+                            <a href="bodegas" class="btn btn-light">Ver información</a>
                         </div>
                         </div>
                     </div>
@@ -69,8 +67,8 @@ export default class Home extends Component {
                         <div class="card text-white bg-dark">
                         <div class="card-body">
                             <h5 class="card-title">Administrar productos</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="#" class="btn btn-light">Go somewhere</a>
+                            <p class="card-text">Registrar, eliminar y modificar información de productos existentes</p>
+                            <a href="productos" class="btn btn-light">Ver información</a>
                         </div>
                         </div>
                     </div>
