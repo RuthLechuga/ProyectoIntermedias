@@ -141,11 +141,15 @@ export default class Usuarios extends Component {
                                 setTimeout(() => {
                                 resolve();
                                 if (oldData) {
-                                    this.setState((prevState) => {
-                                    const data = [...prevState.data];
-                                    data[data.indexOf(oldData)] = newData;
-                                    return { ...prevState, data };
-                                    });
+                                    const cambiar=newData
+                                    cambiar.id_usuario=oldData.id_usuario
+                                    axios.put("https://proyectopi-server.herokuapp.com/usuario",cambiar).then(res=>{
+                                        this.setState((prevState) => {
+                                            const data = [...prevState.data];
+                                            data[data.indexOf(oldData)] = newData;
+                                            return { ...prevState, data };
+                                        });
+                                    })
                                 }
                                 }, 600);
                             }),
