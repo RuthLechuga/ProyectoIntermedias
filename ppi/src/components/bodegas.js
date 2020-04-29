@@ -21,6 +21,9 @@ import ViewColumn from '@material-ui/icons/ViewColumn';
 import Button from '@material-ui/core/Button';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import IconButton from '@material-ui/core/IconButton';
+import Switch from '@material-ui/core/Switch';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 export default class Bodegas extends Component {
 
@@ -49,16 +52,17 @@ export default class Bodegas extends Component {
 
         this.state = {
             columns: [
-                { title: 'ID', field: 'id_sede' },
-                { title: 'ALIAS', field: 'alias' },
-                { title: 'DIRECCION', field: 'direccion'},
+                { title: 'ID', field: 'id_bodega' },
+                { title: 'NOMBRE', field: 'nombre' },
+                { title: 'ESTADO', field: 'estado'},
             ],
             data: [],
-            municipios: [],
-            selectedMunicipio: 0,
-            alias: '',
-            direccion: '',
-            id_usuario: 2
+            sedes: [],
+            selectedSedes: 0,
+            nombre: '',
+            estado: '',
+            id_usuario: 2,
+            checkedA: true
         }
     }
 
@@ -69,20 +73,20 @@ export default class Bodegas extends Component {
     }
 
     componentDidMount() {
-        axios.get('https://proyectopi-server.herokuapp.com/sede')
+        axios.get('https://proyectopi-server.herokuapp.com/bodega')
         .then(res => {
             const data = res.data;
             this.setState({data});
         });
 
-        axios.get('https://proyectopi-server.herokuapp.com/municipio')
+        axios.get('https://proyectopi-server.herokuapp.com/sede')
         .then(res => {
             console.log(res);
-            const municipios = res.data;
-            this.setState({municipios});
+            const sedes = res.data;
+            this.setState({sedes});
         });
 
-        console.log(this.state.municipios);
+        console.log(this.state.sedes);
     }
 
     handleChange = (event) => {
@@ -90,23 +94,24 @@ export default class Bodegas extends Component {
     };
 
     crear(event){
+        const estado = this.state.checkedA ? "1": "0";
+
         const params = {
-            alias: this.state.alias,
-            direccion: this.state.direccion,
-            id_usuario: this.state.id_usuario,
-            id_municipio: this.state.id_municipio
+            "nombre": this.state.nombre,
+            "estado": estado,
+            "id_sede": this.state.selectedSedes,
+            "id_usuario": this.state.id_usuario
         }
-
-        axios.post('https://proyectopi-server.herokuapp.com/sede',params)
+        console.log(params);
+        axios.post('https://proyectopi-server.herokuapp.com/bodega',params)
         .then(res => {
-            alert('Sede creada exitosamente');
+            alert('Bodega creada exitosamente');
         });
-
-        console.log('Hola Mundo :D');
-        console.log(this.state.selectedMunicipio);
-        console.log(this.state.alias);
-        console.log(this.state.direccion)
     }
+
+    handleChangeSwitch = (event) => {
+        this.setState({ ...this.state, [event.target.name]: event.target.checked });
+    };
 
     render() {
         const style={
@@ -122,7 +127,7 @@ export default class Bodegas extends Component {
                             size="large"
                             title="Home"
                             onClick={() => {
-                                this.props.history.push("/vendedor_home")
+                                this.props.history.push("/home")
                             }}
                         >Grupo 8</Button>
                         <IconButton aria-label="delete" style={style.back} onClick={()=>{                         
@@ -156,10 +161,11 @@ export default class Bodegas extends Component {
                             onRowDelete: (oldData) =>
                             new Promise((resolve) => {
                                 setTimeout(() => {
-                                const data_eliminar = { "id_sede": oldData.id_sede }
+                                const data_eliminar = { "id_bodega": oldData.id_bodega }
+                                console.log(oldData);
                                 resolve();
 
-                                axios.delete("https://proyectopi-server.herokuapp.com/sede",{data: data_eliminar}).
+                                axios.delete("https://proyectopi-server.herokuapp.com/bodega",{data: data_eliminar}).
                                 then(res => {
                                     this.setState((prevState) => {
                                         const data = [...prevState.data];
@@ -174,27 +180,27 @@ export default class Bodegas extends Component {
                 </div>
                 <br></br><br></br>
                 <div class="container">
-                    <h2 id="simple-modal-title">Crear Sede</h2>
+                    <h2 id="simple-modal-title">Crear Bodega</h2>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">Alias</span>
+                            <span class="input-group-text" id="basic-addon1">Nombre</span>
                         </div>
-                        <input name="alias" type="text" class="form-control" placeholder="Alias" aria-label="alias" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
+                        <input name="nombre" type="text" class="form-control" placeholder="Nombre" aria-label="nombre" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
                     </div>
 
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">Direccion</span>
-                        </div>
-                        <input name="direccion" type="text" class="form-control" placeholder="Direccion" aria-label="direccion" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
-                    </div>
+                    <FormGroup row>
+                        <FormControlLabel
+                            label="Estado Bodega"
+                            control={<Switch checked={this.state.checkedA} onChange={this.handleChangeSwitch} name="checkedA" />}
+                        />
+                    </FormGroup>
                     
                     <select
                         class="form-control form-control-sm"
-                        value={this.state.selectedMunicipio}
+                        value={this.state.selectedSedes}
                         onChange={e =>
                             this.setState({
-                            selectedMunicipio: e.target.value,
+                            selectedSedes: e.target.value,
                             validationError:
                                 e.target.value === ""
                                 ? "You must select your favourite team"
@@ -202,17 +208,17 @@ export default class Bodegas extends Component {
                             })
                         }
                         >
-                        {this.state.municipios.map(municipio => (
+                        {this.state.sedes.map(sede => (
                             <option
-                            key={municipio.id_municipio}
-                            value={municipio.id_municipio}
+                            key={sede.id_sede}
+                            value={sede.id_sede}
                             >
-                            {municipio.nombre}
+                            {sede.alias}
                             </option>
                         ))}
                         </select>
                         <br></br><br></br>
-                        <Button onClick={this.crear.bind(this)} variant="contained" color="primary">Crear Sede</Button>
+                        <Button onClick={this.crear.bind(this)} variant="contained" color="primary">Crear Bodega</Button>
                         <br></br><br></br><br></br>
                 </div>
             </Router>

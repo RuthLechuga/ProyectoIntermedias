@@ -22,7 +22,7 @@ import Button from '@material-ui/core/Button';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import IconButton from '@material-ui/core/IconButton';
 import DateFnsUtils from '@date-io/date-fns';
-import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import Grid from '@material-ui/core/Grid';
 
 export default class Usuarios extends Component {
@@ -82,10 +82,6 @@ export default class Usuarios extends Component {
             this.setState({data});
         });
     }
-
-    handleChange = (event) => {
-        console.log(event.target.value);
-    };
 
     handleDateChange = (date) => {
         this.setState({date});
