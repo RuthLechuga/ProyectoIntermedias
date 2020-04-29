@@ -49,16 +49,15 @@ export default class Productos extends Component {
 
         this.state = {
             columns: [
-                { title: 'ID', field: 'id_sede' },
-                { title: 'ALIAS', field: 'alias' },
-                { title: 'DIRECCION', field: 'direccion'},
+                { title: 'ID', field: 'id_producto' },
+                { title: 'NOMBRE', field: 'nombre' },
+                { title: 'DESCRIPCION', field: 'descripcion'},
+                { title: 'PRECIO', field: 'precio'},
             ],
             data: [],
-            municipios: [],
-            selectedMunicipio: 0,
-            alias: '',
-            direccion: '',
-            id_usuario: 2
+            nombre: '',
+            descripcion: '',
+            precio: 0.0
         }
     }
 
@@ -69,43 +68,11 @@ export default class Productos extends Component {
     }
 
     componentDidMount() {
-        axios.get('https://proyectopi-server.herokuapp.com/sede')
+        axios.get('https://proyectopi-server.herokuapp.com/producto')
         .then(res => {
             const data = res.data;
             this.setState({data});
         });
-
-        axios.get('https://proyectopi-server.herokuapp.com/municipio')
-        .then(res => {
-            console.log(res);
-            const municipios = res.data;
-            this.setState({municipios});
-        });
-
-        console.log(this.state.municipios);
-    }
-
-    handleChange = (event) => {
-        console.log(event.target.value);
-    };
-
-    crear(event){
-        const params = {
-            alias: this.state.alias,
-            direccion: this.state.direccion,
-            id_usuario: this.state.id_usuario,
-            id_municipio: this.state.id_municipio
-        }
-
-        axios.post('https://proyectopi-server.herokuapp.com/sede',params)
-        .then(res => {
-            alert('Sede creada exitosamente');
-        });
-
-        console.log('Hola Mundo :D');
-        console.log(this.state.selectedMunicipio);
-        console.log(this.state.alias);
-        console.log(this.state.direccion)
     }
 
     render() {
@@ -136,30 +103,52 @@ export default class Productos extends Component {
                     <h1 id='title'>Productos</h1>
                     <MaterialTable
                         icons={this.tableIcons}
-                        title="Sedes existentes"
+                        title="Productos existentes"
                         columns={this.state.columns}
                         data={this.state.data}
                         editable={{
+
+                            onRowAdd: (newData) =>
+                            new Promise((resolve) => {
+                                setTimeout(() => {
+                                resolve();
+                                axios.post('https://proyectopi-server.herokuapp.com/producto',newData)
+                                .then(res => {
+                                    this.setState((prevState) => {
+                                        const data = [...prevState.data];
+                                        data.push(newData);
+                                        return { ...prevState, data };
+                                    });
+                                    alert('Producto creado exitosamente');
+                                });
+                                }, 600);
+                            }),
+
                             onRowUpdate: (newData, oldData) =>
                             new Promise((resolve) => {
                                 setTimeout(() => {
                                 resolve();
                                 if (oldData) {
-                                    this.setState((prevState) => {
-                                    const data = [...prevState.data];
-                                    data[data.indexOf(oldData)] = newData;
-                                    return { ...prevState, data };
-                                    });
+                                    const cambiar=newData
+                                    cambiar.id_producto=oldData.id_producto
+                                    axios.put("https://proyectopi-server.herokuapp.com/producto",cambiar).then(res=>{
+                                        this.setState((prevState) => {
+                                            const data = [...prevState.data];
+                                            data[data.indexOf(oldData)] = newData;
+                                            return { ...prevState, data };
+                                        });
+                                    })
                                 }
                                 }, 600);
                             }),
+
                             onRowDelete: (oldData) =>
                             new Promise((resolve) => {
                                 setTimeout(() => {
-                                const data_eliminar = { "id_sede": oldData.id_sede }
+                                const data_eliminar = { "id_producto": oldData.id_producto }
                                 resolve();
 
-                                axios.delete("https://proyectopi-server.herokuapp.com/sede",{data: data_eliminar}).
+                                axios.delete("https://proyectopi-server.herokuapp.com/producto",{data: data_eliminar}).
                                 then(res => {
                                     this.setState((prevState) => {
                                         const data = [...prevState.data];
@@ -173,48 +162,6 @@ export default class Productos extends Component {
                     />
                 </div>
                 <br></br><br></br>
-                <div class="container">
-                    <h2 id="simple-modal-title">Crear Sede</h2>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">Alias</span>
-                        </div>
-                        <input name="alias" type="text" class="form-control" placeholder="Alias" aria-label="alias" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
-                    </div>
-
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">Direccion</span>
-                        </div>
-                        <input name="direccion" type="text" class="form-control" placeholder="Direccion" aria-label="direccion" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
-                    </div>
-                    
-                    <select
-                        class="form-control form-control-sm"
-                        value={this.state.selectedMunicipio}
-                        onChange={e =>
-                            this.setState({
-                            selectedMunicipio: e.target.value,
-                            validationError:
-                                e.target.value === ""
-                                ? "You must select your favourite team"
-                                : ""
-                            })
-                        }
-                        >
-                        {this.state.municipios.map(municipio => (
-                            <option
-                            key={municipio.id_municipio}
-                            value={municipio.id_municipio}
-                            >
-                            {municipio.nombre}
-                            </option>
-                        ))}
-                        </select>
-                        <br></br><br></br>
-                        <Button onClick={this.crear.bind(this)} variant="contained" color="primary">Crear Sede</Button>
-                        <br></br><br></br><br></br>
-                </div>
             </Router>
         );
     }
