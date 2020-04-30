@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route} from "react-router-dom";
+import { BrowserRouter as Router} from "react-router-dom";
 import Button from '@material-ui/core/Button';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import Slider from '@material-ui/core/Slider';
 import axios from 'axios';
 
 import Paper from '@material-ui/core/Paper';
@@ -19,11 +17,26 @@ import Grid from '@material-ui/core/Grid';
 import Switch from '@material-ui/core/Switch';
 
 import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
 import TextField from '@material-ui/core/TextField';
 
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import Divider from '@material-ui/core/Divider';
+
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { PDF } from './PDF'
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+
 export default class Vendedor_ventas extends Component {
+    usuario;
     constructor(props){
         super(props);
+        this.usuario=JSON.parse(localStorage.getItem('usuario'))
         let t={
             columnas:[
                 { id: 'id_producto', label: 'ID' },
@@ -32,33 +45,42 @@ export default class Vendedor_ventas extends Component {
                 { id: 'precio', label: 'Precio c/u', align: 'right',format: (value) => value.toFixed(2), },
                 { id: 'total', label: 'TOTAL', align: 'right',format: (value) => value.toFixed(2) }
             ],
-            rows:[
-                this.createData({id_producto:1,     cantidad:4,     nombre:"mango con pepita",  precio:10.00}),
-                this.createData({id_producto:3,     cantidad:5,     nombre:"aguas",             precio:5.00}),
-                this.createData({id_producto:5,     cantidad:2,     nombre:"cocos",             precio:3.50}),
-                this.createData({id_producto:7,     cantidad:6,     nombre:"helado",            precio:12.00}),
-                this.createData({id_producto:53,    cantidad:3,     nombre:"refresco",          precio:5.00}),
-                this.createData({id_producto:2345,  cantidad:4,     nombre:"globos",            precio:25.00}),
-                //this.createData({id_producto:7627,  cantidad:11,    nombre:"tacos",             precio:15.00}),
-                //this.createData({id_producto:72,    cantidad:15,    nombre:"enchiladas",        precio:20.00}),
-                //this.createData({id_producto:4,     cantidad:16,    nombre:"vino",              precio:70.00}),
-                //this.createData({id_producto:2643,  cantidad:26,    nombre:"pase entrada",      precio:400.00}),
-                //this.createData({id_producto:246,   cantidad:2,     nombre:"mayordomo",         precio:200.00}),
-                //this.createData({id_producto:24645, cantidad:1,     nombre:"3 dias hotel",      precio:1.00})
-            ],
+            rows:[],
             page:0,
             rowsPerPage:10,
             envio:false,
             subtotal:0.0,
             descuento:0,
-            selected:[]
+            selected:[],
+            /* ****************************** PARTE DE CATALOGO DE VENTAS ****************************** */
+            columnas2:[
+                { id: 'id_producto', label: 'ID' },
+                { id: 'nombre', label: 'Producto' },
+                { id: 'descripcion', label: 'Descripcion' },
+                { id: 'precio', label: 'Precio c/u', align: 'right',format: (value) => value.toFixed(2), }
+            ],
+            rows2:[],
+            page2:0,
+            rowsPerPage2:10,
+            open:false,
+            producto:{},
+            /* ******************************  PARTE DE VENTA AL CLIENTE ****************************** */
+            clientes:[],
+            cliente:0,
+            cl:{},
+            abrir:false,
         }
-        let sub=0;
-        for(let item of t.rows)
-            sub+=item.total
-        const subtotal=sub.toFixed(2)
-        t.subtotal=subtotal;
+        
         this.state=t;
+        
+    }
+    componentDidMount () {
+        axios.get('https://proyectopi-server.herokuapp.com/producto').then(res=>{
+            this.setState({rows2:res.data})
+        })
+        axios.get('https://proyectopi-server.herokuapp.com/cliente').then(res=>{
+            this.setState({clientes:res.data})
+        })
     }
     createData(producto){
         const id_producto=producto.id_producto;
@@ -73,10 +95,19 @@ export default class Vendedor_ventas extends Component {
         const page= newPage;
         this.setState({page});
     }
+    setPage2=(event, newPage)=>{
+        const page2= newPage;
+        this.setState({page2});
+    }
     setRowsPerPage=(event)=>{
         const rowsPerPage= +event.target.value;
         const page= 0;
         this.setState({page,rowsPerPage});
+    }
+    setRowsPerPage2=(event)=>{
+        const rowsPerPage2= +event.target.value;
+        const page2= 0;
+        this.setState({page2,rowsPerPage2});
     }
     setDomicilio=(event)=>{
         this.setState({
@@ -96,9 +127,6 @@ export default class Vendedor_ventas extends Component {
             res=this.state.subtotal
         return "Q "+parseFloat(res-this.state.descuento).toFixed(2)
     }
-    submit=()=>{
-        console.log("Se ha realizado la venta exitosamente de Q "+this.getTotal())
-    }
     onDelete(event,row){
         const selected=this.state.rows.indexOf(row)
         let rows= [];
@@ -116,7 +144,7 @@ export default class Vendedor_ventas extends Component {
     }
     onDiscount=(event)=>{
         let text=event.target.value
-        if(text.charAt(text.length-1)=="%"){//es porcentaje
+        if(text.charAt(text.length-1)==="%"){//es porcentaje
             let numero=text.substring(0,text.length-1)
             if(!isNaN(numero)){
                 numero=(+numero)/100
@@ -140,6 +168,79 @@ export default class Vendedor_ventas extends Component {
         }
 
     }
+    onCerrar=(value)=>{
+        this.setState({open:false})
+        if(value!==0){
+            const producto={
+                id_producto:this.state.producto.id_producto,
+                nombre:this.state.producto.nombre,
+                cantidad:value,
+                precio:this.state.producto.precio
+            }
+            console.log(JSON.stringify(producto))
+            let rows=this.state.rows;
+            rows.push(this.createData(producto))
+            let sub=0;
+            for(let item of rows)
+                sub+=item.total
+            const subtotal=sub.toFixed(2)
+            this.setState({rows,subtotal})
+        }
+        
+        
+    }
+    onAdd=(prod)=>{
+        this.setState({open:true,producto:prod})
+    }
+    onCliente=(event)=>{
+        const data=this.state.clientes
+        for(let i of data)
+            if(i.id_cliente===event.target.value){
+                this.setState({cl:i})
+            }
+        this.setState({cliente:event.target.value})
+    }
+    submit=()=>{
+        //console.log("Se ha realizado la venta exitosamente de Q "+this.getTotal())
+        this.setState({abrir:!this.state.abrir})
+        let venta={
+            fecha_facturacion:this.getToday(),
+            fecha_entrega:this.state.envio?this.getNextWeek():null,
+            id_cliente:this.state.cl.id_cliente,
+            id_usuario:this.usuario.id_usuario
+        }
+        let v=0;
+        axios.post('https://proyectopi-server.herokuapp.com/venta',venta).then(res=>{
+            console.log(res)
+            v=res.data.insertId;
+        }).then(()=>{
+            let detalle_venta={id_venta:v}
+            for(let i of this.state.rows){
+                detalle_venta.id_producto=i.id_producto;
+                detalle_venta.cantidad=i.cantidad;
+                detalle_venta.precio=i.precio;
+                axios.post('https://proyectopi-server.herokuapp.com/detalle_venta',detalle_venta).then((res)=>{
+                    console.log(res)
+                })
+            }
+        })
+        
+    }
+    getToday(){
+        let newDate = new Date()
+        let date = newDate.getDate();
+        let month = newDate.getMonth() + 1;
+        let year = newDate.getFullYear();
+        return `${year}-${month<10?`0${month}`:`${month}`}-${date}`
+    }
+    getNextWeek(){
+        let dia=new Date()
+        let newDate = new Date(dia.getTime() + 7 * 24 * 60 * 60 * 1000)
+        let date = newDate.getDate();
+        let month = newDate.getMonth() + 1;
+        let year = newDate.getFullYear();
+        return `${year}-${month<10?`0${month}`:`${month}`}-${date}`
+    }
     render() {
         const styles={
             head: {
@@ -150,9 +251,19 @@ export default class Vendedor_ventas extends Component {
                 float:"right"
             },
             paper:{
-                width:"50%",
+                width:"49%",
+                float: "left",
                 paddingLeft:"5px",
-                paddingRight:"5px"
+                paddingRight:"5px", 
+                margin: "auto",
+                marginTop:"0"
+            },
+            paper2:{
+                width:"49%",
+                float:"right",
+                paddingLeft:"5px",
+                paddingRight:"5px",
+                marginTop:"0"
             },
             container:{
                 maxHeight:500
@@ -169,8 +280,23 @@ export default class Vendedor_ventas extends Component {
                 width:"80%", 
                 marginTop:"100px", 
                 marginBottom:"50px"
+            },
+            datos:{
+                margin:"auto",
+                width: "50%"
+            },
+            clientes:{
+                width:"50%"
             }
         }
+        const isPDF=this.state.abrir;
+        let crear;
+        if(isPDF){
+            let pdf=new PDF(this.state.rows,this.state.subtotal,this.state.descuento,this.state.envio,this.state.cl,this.usuario)
+            crear=<PDFDownloadLink document={pdf.getPDF()} fileName={"factura.pdf"} >Link para descarga</PDFDownloadLink>
+        }
+        else
+            crear=<p></p>
         return (
             <Router>
                 <nav className="navbar navbar-expand-lg navbar-light fixed-top">
@@ -196,13 +322,13 @@ export default class Vendedor_ventas extends Component {
                             <Table stickyHeader aria-label="sticky table" size={'small'}>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell style={styles.head}>
-                                        </TableCell>
                                         {this.state.columnas.map((column) => (
                                             <TableCell style={styles.head} key={column.id} align={column.align} >
                                                 {column.label}
                                             </TableCell>
                                         ))}
+                                        <TableCell style={styles.head}>
+                                        </TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -286,10 +412,113 @@ export default class Vendedor_ventas extends Component {
                             <br/>
                         </div>
                     </Paper>
-                    <p>holaaaaa</p>
+                    <Paper style={styles.paper2} elevation={3}>
+                    <h1>Catalogo</h1>
+                        <TableContainer style={styles.container}>
+                            <Table stickyHeader aria-label="sticky table" size={'small'}>
+                                <TableHead>
+                                    <TableRow>
+                                        {this.state.columnas2.map((column) => (
+                                            <TableCell style={styles.head} key={column.id} align={column.align} >
+                                                {column.label}
+                                            </TableCell>
+                                        ))}
+                                        <TableCell style={styles.head}>
+                                        </TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {this.state.rows2.slice(this.state.page2 * this.state.rowsPerPage2, this.state.page2 * this.state.rowsPerPage2 + this.state.rowsPerPage2).map((row)=>{
+                                        return(
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={row.id_producto} style={styles.row}>
+                                                {this.state.columnas2.map((column)=>{
+                                                    const value =row[column.id];
+                                                    return(
+                                                        <TableCell key={column.id} align={column.align} >
+                                                            {column.format && typeof value === 'number' ? column.format(value) : value}
+                                                        </TableCell>
+                                                    );
+                                                })}
+                                                <TableCell>
+                                                    <IconButton aria-label="delete" onClick={()=>this.onAdd(row)}>
+                                                        <AddIcon fontSize="small" />
+                                                    </IconButton>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <TablePagination
+                            rowsPerPageOptions={[10,20,30]}
+                            component="div"
+                            count={this.state.rows2.length}
+                            rowsPerPage={this.state.rowsPerPage2}
+                            page={this.state.page2}
+                            onChangePage={this.setPage2}
+                            onChangeRowsPerPage={this.setRowsPerPage2}
+                        />
+                    </Paper>
+                    <SimpleDialog open={this.state.open} onClose={this.onCerrar}/>
                 </div>
+                <br/>
+                <br/>
+                <br/>
+                <Divider />
+                <Paper style={styles.datos} elevation={7}>
+                    <FormControl style={{width:"80%", margin:"auto", marginTop:40}}>
+                        <InputLabel>Cliente</InputLabel>
+                        <Select style={styles.clientes} value={this.state.cliente} onChange={this.onCliente} >
+                            {this.state.clientes.map((cliente)=>(
+                                <MenuItem value={cliente.id_cliente}>{cliente.id_cliente+" - "+cliente.nombre}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Paper>
                 <Button variant="contained" color="primary" style={styles.submit} onClick={this.submit}>Realizar venta</Button>
+                {crear}
+                
             </Router>
         )
     }
+    
+}
+function SimpleDialog(props){
+    const { onClose, open } = props;
+    let valor=1;
+    const onCerrar=()=>{
+        onClose(valor)
+    }
+    const handleClose=()=>{
+        onClose(0)
+    }
+    const onCambio=(event)=>{
+        valor=event.target.value;
+        console.log(valor)
+    }
+    const styles={
+        num:{
+            width:"90%",
+            margin: "auto",
+            marginBottom:"40px"
+        },
+        diagolo:{
+            width:"35%"
+        }
+    }
+    return(
+        <Dialog onClose={handleClose} open={open} style={styles.dialogo}>
+            <DialogTitle id="simple-dialog-title">Elija una cantidad</DialogTitle>
+            <TextField type="number" id="standard-basic" label="Cantidad" style={styles.num} inputProps={{min:"1"}} defaultValue={1} onChange={onCambio}/>
+            <DialogActions>
+                <Button onClick={handleClose} color="warning">
+                    Cancelar
+                </Button>
+                <Button onClick={onCerrar} color="primary" autoFocus>
+                    Aceptar
+                </Button>
+            </DialogActions>
+        </Dialog>
+    )
 }
