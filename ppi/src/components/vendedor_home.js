@@ -6,13 +6,26 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import IconButton from '@material-ui/core/IconButton';
+
+import axios from 'axios';
 
 export default class Vendedor_home extends Component {
     constructor(props){
         super(props);
-        //console.log(props);
+        let usuario=JSON.parse(localStorage.getItem('usuario'))
+        axios.get('https://proyectopi-server.herokuapp.com/sede').then(res=>{
+            for(let item of res.data){
+                if(item.id_usuario=usuario.id_usuario){
+                    usuario.id_sede=item.id_sede; break;
+                }
+            }
+            console.log(usuario)
+            localStorage.setItem('usuario', JSON.stringify(usuario));
+        })
+
+        //https://proyectopi-server.herokuapp.com/sede
     }
     render() {
         const style={
@@ -32,21 +45,20 @@ export default class Vendedor_home extends Component {
                                 this.props.history.push("/vendedor_home")
                             }}
                         >Grupo 8</Button>
-                        <IconButton aria-label="delete" style={style.back} onClick={()=>{
-                            
-                        }}>
-                            <ArrowBackIcon fontSize="large" />
+                        <IconButton aria-label="delete" style={style.back} >
+                            <ExitToAppIcon fontSize="large" />
                         </IconButton>
                     </div>
                 </nav>
                 <br/>
                 <br/>
                 <br/>
+                <br/>
+                <Carta_Ventas p={this.props}/>
+                <br/>
                 <Carta_Clientes p={this.props}/>
                 <br/>
-                <Carta_Ventas/>
-                <br/>
-                <Carta_Reportes/>
+                <Carta_Reportes p={this.props}/>
                 <br/>
             </Router>
         );
@@ -69,7 +81,9 @@ function Carta_Clientes(props) {
     
     return (
         <Card style={styles.carta}>
-          <CardActionArea to="/clientes">
+          <CardActionArea onClick={()=>{
+              props.history.push("/vendedor_home/clientes")
+          }}>
             <CardMedia
               component="img"
               style={styles.media}
@@ -89,7 +103,8 @@ function Carta_Clientes(props) {
         </Card>
     );
 }
-function Carta_Ventas(){
+function Carta_Ventas(props){
+    props=props.p
     const styles={
         carta:{
             maxWidth: "80%",
@@ -105,7 +120,9 @@ function Carta_Ventas(){
     }
     return (
         <Card style={styles.carta}>
-          <CardActionArea onClick={redirect}>
+          <CardActionArea onClick={()=>{
+              props.history.push("/vendedor_home/ventas")
+          }}>
             <CardMedia
               component="img"
               style={styles.media}
@@ -125,7 +142,8 @@ function Carta_Ventas(){
         </Card>
     );
 }
-function Carta_Reportes(){
+function Carta_Reportes(props){
+    props=props.p
     const styles={
         carta:{
             maxWidth: "80%",
@@ -136,13 +154,11 @@ function Carta_Reportes(){
             //backgroundImage: `url(${gr})`
         }
     }
-    
-    const redirect=()=>{
-        console.log("presionado")
-    }
     return (
         <Card style={styles.carta}>
-          <CardActionArea onClick={redirect}>
+          <CardActionArea onClick={()=>{
+              props.history.push("/vendedor_home/reportes")
+            }}>
             <CardMedia
               component="img"
               style={styles.media}

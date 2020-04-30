@@ -32,6 +32,7 @@ export default class Login extends Component {
             if(res.data[0].id_rol==1){ //usuario vendedor
                 //usuario: andyecarvajal@gmail.com
                 //pass: 12345678#
+                localStorage.setItem('usuario', JSON.stringify(res.data[0]));
                 this.props.history.push("/vendedor_home");
             }
             else if(res.data[0].id_rol==6){

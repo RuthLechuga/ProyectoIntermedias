@@ -11,6 +11,9 @@ import Usuarios from "./components/usuarios";
 import Productos from "./components/productos";
 
 import Vendedor_home from "./components/vendedor_home";
+import Vendedor_clientes from "./components/vendedor_clientes";
+import Vendedor_reportes from "./components/vendedor_reportes";
+import Vendedor_ventas from './components/vendedor_ventas';
 
 function App() {
   return (<Router>
@@ -20,6 +23,10 @@ function App() {
                       <Route path="/login" component={Login} />
                       <Route path="/home" component={Home} />
                       <Route path="/sedes" component={Sedes} />
+                      <Route exact path="/vendedor_home" component={Vendedor_home} />
+                      <Route exact path="/vendedor_home/clientes" component={Vendedor_clientes} />
+                      <Route exact path="/vendedor_home/reportes" component={Vendedor_reportes} />
+                      <Route exact path="/vendedor_home/ventas" component={Vendedor_ventas} />
                       <Route path="/bodegas" component={Bodegas} />
                       <Route path="/usuarios" component={Usuarios} />
                       <Route path="/productos" component={Productos} />
