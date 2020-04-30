@@ -21,8 +21,11 @@ import ViewColumn from '@material-ui/icons/ViewColumn';
 import Button from '@material-ui/core/Button';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import IconButton from '@material-ui/core/IconButton';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import Grid from '@material-ui/core/Grid';
 
-export default class Sedes extends Component {
+export default class Usuarios extends Component {
 
     tableIcons = {
         Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -49,16 +52,20 @@ export default class Sedes extends Component {
 
         this.state = {
             columns: [
-                { title: 'ID', field: 'id_sede' },
-                { title: 'ALIAS', field: 'alias' },
-                { title: 'DIRECCION', field: 'direccion'},
+                { title: 'ID', field: 'id_usuario' },
+                { title: 'DPI', field: 'dpi' },
+                { title: 'NOMBRE', field: 'nombre'},
+                { title: 'FECHA NACIMIENTO', field:'fecha_nacimiento'},
+                { title: 'CORREO', field:'correo'},
+                { title: 'PASSWORD', field:'password'}
             ],
+            date: new Date('2014-08-18T21:11:54'),
             data: [],
-            municipios: [],
-            selectedMunicipio: 0,
-            alias: '',
-            direccion: '',
-            id_usuario: localStorage.getItem('idUsuario')
+            dpi: '',
+            nombre: '',
+            fecha_nacimiento: '',
+            correo: '',
+            password: ''
         }
     }
 
@@ -69,41 +76,32 @@ export default class Sedes extends Component {
     }
 
     componentDidMount() {
-        axios.get('https://proyectopi-server.herokuapp.com/sede')
+        axios.get('https://proyectopi-server.herokuapp.com/usuario')
         .then(res => {
             const data = res.data;
             this.setState({data});
         });
-
-        axios.get('https://proyectopi-server.herokuapp.com/municipio')
-        .then(res => {
-            console.log(res);
-            const municipios = res.data;
-            this.setState({municipios});
-        });
-
-        console.log(this.state.municipios);
-        console.log("id",localStorage.getItem('idUsuario'))
     }
 
-    handleChange = (event) => {
-        console.log(event.target.value);
+    handleDateChange = (date) => {
+        this.setState({date});
     };
 
     crear(event){
         const params = {
-            alias: this.state.alias,
-            direccion: this.state.direccion,
-            id_usuario: this.state.id_usuario,
-            id_municipio: this.state.selectedMunicipio
+            dpi: this.state.dpi,
+            nombre: this.state.nombre,
+            fecha_nacimiento: this.state.date,
+            correo: this.state.correo,
+            password: this.state.password
         }
 
-        console.log(params);
-
-        axios.post('https://proyectopi-server.herokuapp.com/sede',params)
+        axios.post('https://proyectopi-server.herokuapp.com/usuario',params)
         .then(res => {
-            alert('Sede creada exitosamente');
+            alert('Usuario creado exitosamente');
         });
+
+        console.log(params)
     }
 
     render() {
@@ -131,10 +129,10 @@ export default class Sedes extends Component {
                 </nav>
                 <br></br><br></br><br></br><br></br>
                 <div>
-                    <h1 id='title'>Sede</h1>
+                    <h1 id='title'>Usuarios</h1>
                     <MaterialTable
                         icons={this.tableIcons}
-                        title="Sedes existentes"
+                        title="Usuarios existentes"
                         columns={this.state.columns}
                         data={this.state.data}
                         editable={{
@@ -143,21 +141,25 @@ export default class Sedes extends Component {
                                 setTimeout(() => {
                                 resolve();
                                 if (oldData) {
-                                    this.setState((prevState) => {
-                                    const data = [...prevState.data];
-                                    data[data.indexOf(oldData)] = newData;
-                                    return { ...prevState, data };
-                                    });
+                                    const cambiar=newData
+                                    cambiar.id_usuario=oldData.id_usuario
+                                    axios.put("https://proyectopi-server.herokuapp.com/usuario",cambiar).then(res=>{
+                                        this.setState((prevState) => {
+                                            const data = [...prevState.data];
+                                            data[data.indexOf(oldData)] = newData;
+                                            return { ...prevState, data };
+                                        });
+                                    })
                                 }
                                 }, 600);
                             }),
                             onRowDelete: (oldData) =>
                             new Promise((resolve) => {
                                 setTimeout(() => {
-                                const data_eliminar = { "id_sede": oldData.id_sede }
+                                const data_eliminar = { "id_usuario": oldData.id_usuario }
                                 resolve();
 
-                                axios.delete("https://proyectopi-server.herokuapp.com/sede",{data: data_eliminar}).
+                                axios.delete("https://proyectopi-server.herokuapp.com/usuario",{data: data_eliminar}).
                                 then(res => {
                                     this.setState((prevState) => {
                                         const data = [...prevState.data];
@@ -172,45 +174,53 @@ export default class Sedes extends Component {
                 </div>
                 <br></br><br></br>
                 <div class="container">
-                    <h2 id="simple-modal-title">Crear Sede</h2>
+                    <h2 id="simple-modal-title">Crear Usuario</h2>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">Alias</span>
+                            <span class="input-group-text" id="basic-addon1">DPI</span>
                         </div>
-                        <input name="alias" type="text" class="form-control" placeholder="Alias" aria-label="alias" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
+                        <input name="dpi" type="text" class="form-control" placeholder="DPI" aria-label="DPI" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
                     </div>
 
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">Direccion</span>
+                            <span class="input-group-text" id="basic-addon1">Nombre</span>
                         </div>
-                        <input name="direccion" type="text" class="form-control" placeholder="Direccion" aria-label="direccion" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
+                        <input name="nombre" type="text" class="form-control" placeholder="nombre" aria-label="nombre" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
                     </div>
                     
-                    <select
-                        class="form-control form-control-sm"
-                        value={this.state.selectedMunicipio}
-                        onChange={e =>
-                            this.setState({
-                            selectedMunicipio: e.target.value,
-                            validationError:
-                                e.target.value === ""
-                                ? "You must select your favourite team"
-                                : ""
-                            })
-                        }
-                        >
-                        {this.state.municipios.map(municipio => (
-                            <option
-                            key={municipio.id_municipio}
-                            value={municipio.id_municipio}
-                            >
-                            {municipio.nombre}
-                            </option>
-                        ))}
-                    </select>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <Grid container justify="space-around">
+                            <KeyboardDatePicker
+                                margin="normal"
+                                id="date-picker-dialog"
+                                label="Date picker dialog"
+                                format="yyyy/MM/dd"
+                                value={this.state.date}
+                                onChange={this.handleDateChange}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                }}
+                            />
+                        </Grid>
+                    </MuiPickersUtilsProvider>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Correo</span>
+                        </div>
+                        <input name="correo" type="text" class="form-control" placeholder="correo" aria-label="correo" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Password</span>
+                        </div>
+                        <input name="password" type="text" class="form-control" placeholder="password" aria-label="password" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
+                    </div>
+                    
                     <br></br><br></br>
-                    <Button onClick={this.crear.bind(this)} variant="contained" color="primary">Crear Sede</Button>
+                    <Button onClick={this.crear.bind(this)} variant="contained" color="primary">Crear Usuario</Button>
                     <br></br><br></br><br></br>
                 </div>
             </Router>
