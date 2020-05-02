@@ -73,6 +73,28 @@ export default class Home extends Component {
                         </div>
                     </div>
                 </div>
+                <br></br><br></br>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="card text-white bg-dark">
+                        <div class="card-body">
+                            <h5 className="card-title">Administrar Roles</h5>
+                            <p className="card-text">Asignar y quitar roles a usuarios</p>
+                            
+                            <a href="sedes" class="btn btn-light">Ver información</a>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="card text-white bg-dark">
+                        <div class="card-body">
+                            <h5 class="card-title">Ver Perfil</h5>
+                            <p class="card-text">Ver y actualizar el perfil de usuario</p>
+                            <a href="usuarios" class="btn btn-light">Ver información</a>
+                        </div>
+                        </div>
+                    </div>
+                </div>
                 </div>
                 <br></br>
             </Router>

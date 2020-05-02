@@ -58,11 +58,15 @@ export default class Bodegas extends Component {
             ],
             data: [],
             sedes: [],
+            usuarios: [],
             selectedSedes: 0,
+            selectedUsuario: 0,
+            selectedBodega: 0,
             nombre: '',
             estado: '',
             id_usuario: localStorage.getItem('idUsuario'),
-            checkedA: true
+            checkedA: true,
+            checkedB: true,
         }
     }
 
@@ -86,6 +90,13 @@ export default class Bodegas extends Component {
             this.setState({sedes});
         });
 
+        axios.get('https://proyectopi-server.herokuapp.com/usuario')
+        .then(res => {
+            console.log(res);
+            const usuarios = res.data;
+            this.setState({usuarios});
+        });
+
         console.log(this.state.sedes);
     }
 
@@ -100,7 +111,7 @@ export default class Bodegas extends Component {
             "nombre": this.state.nombre,
             "estado": estado,
             "id_sede": this.state.selectedSedes,
-            "id_usuario": this.state.id_usuario
+            "id_usuario": this.state.selectedUsuario
         }
         console.log(params);
         axios.post('https://proyectopi-server.herokuapp.com/bodega',params)
@@ -109,7 +120,26 @@ export default class Bodegas extends Component {
         });
     }
 
+    cambiar(event){
+        const estado = this.state.checkedB ? "1": "0";
+
+        const bodega = this.state.data.filter(bodega => bodega.id_bodega==this.state.selectedBodega)[0];
+        bodega.estado = estado;
+
+        axios.put('https://proyectopi-server.herokuapp.com/bodega',bodega)
+        .then(res => {
+            alert('Estado cambiado exitosamente');
+        });
+
+        console.log(estado);
+        console.log(bodega);
+    }
+
     handleChangeSwitch = (event) => {
+        this.setState({ ...this.state, [event.target.name]: event.target.checked });
+    };
+
+    handleChangeSwitch2 = (event) => {
         this.setState({ ...this.state, [event.target.name]: event.target.checked });
     };
 
@@ -195,31 +225,107 @@ export default class Bodegas extends Component {
                         />
                     </FormGroup>
                     
-                    <select
-                        class="form-control form-control-sm"
-                        value={this.state.selectedSedes}
-                        onChange={e =>
-                            this.setState({
-                            selectedSedes: e.target.value,
-                            validationError:
-                                e.target.value === ""
-                                ? "You must select your favourite team"
-                                : ""
-                            })
-                        }
-                        >
-                        {this.state.sedes.map(sede => (
-                            <option
-                            key={sede.id_sede}
-                            value={sede.id_sede}
+                    <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Sede</span>
+                            </div>
+                            <select
+                                class="form-control"
+                                value={this.state.selectedSedes}
+                                onChange={e =>
+                                    this.setState({
+                                    selectedSedes: e.target.value,
+                                    validationError:
+                                        e.target.value === ""
+                                        ? "You must select your favourite team"
+                                        : ""
+                                    })
+                                }
+                                >
+                                {this.state.sedes.map(sede => (
+                                    <option
+                                    key={sede.id_sede}
+                                    value={sede.id_sede}
+                                    >
+                                    {sede.alias}
+                                    </option>
+                                ))}
+                            </select>
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Encargado</span>
+                        </div>
+                        <select
+                            class="form-control"
+                            value={this.state.selectedUsuario}
+                            onChange={e =>
+                                this.setState({
+                                selectedUsuario: e.target.value,
+                                validationError:
+                                    e.target.value === ""
+                                    ? "You must select your favourite team"
+                                    : ""
+                                })
+                            }
                             >
-                            {sede.alias}
-                            </option>
-                        ))}
+                            {this.state.usuarios.map(usuario => (
+                                <option
+                                key={usuario.id_usuario}
+                                value={usuario.id_usuario}
+                                >
+                                {usuario.nombre}
+                                </option>
+                            ))}
                         </select>
-                        <br></br><br></br>
-                        <Button onClick={this.crear.bind(this)} variant="contained" color="primary">Crear Bodega</Button>
-                        <br></br><br></br><br></br>
+                    </div>
+
+                    <br></br><br></br>
+                    <Button onClick={this.crear.bind(this)} variant="contained" color="primary">Crear Bodega</Button>
+                    <br></br><br></br><br></br>
+                </div>
+                <br></br><br></br>
+                <div class="container">
+                    <h2 id="simple-modal-title">Cambiar Estado Bodega</h2>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Bodega</span>
+                        </div>
+                        <select
+                            class="form-control"
+                            value={this.state.selectedBodega}
+                            onChange={e =>
+                                this.setState({
+                                selectedBodega: e.target.value,
+                                validationError:
+                                    e.target.value === ""
+                                    ? "You must select your favourite team"
+                                    : ""
+                                })
+                            }
+                            >
+                            {this.state.data.map(bodega => (
+                                <option
+                                key={bodega.id_bodega}
+                                value={bodega.id_bodega}
+                                >
+                                {bodega.nombre}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <FormGroup row>
+                        <FormControlLabel
+                            label="Estado Bodega"
+                            control={<Switch checked={this.state.checkedB} onChange={this.handleChangeSwitch2} name="checkedB" />}
+                        />
+                    </FormGroup>
+                    <br></br><br></br>
+                    <Button onClick={this.cambiar.bind(this)} variant="contained" color="primary">Cambiar Estado</Button>
+                    <br></br><br></br><br></br>
                 </div>
             </Router>
         );
