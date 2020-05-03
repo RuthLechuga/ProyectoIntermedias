@@ -23,6 +23,12 @@ import ShowExt from './components/MBodega/ShowExt/ShowExt';
 import ShowInt from './components/MBodega/ShowInt/ShowInt';
 import UpdateInv from './components/MBodega/UpdateInv/UpdateInv';
 
+import repartidor_home from './components/repartidor_home';
+import repartidor_ordenes from './components/repartidor_ordenes';
+import repartidor_transferencia from './components/repartidor_transferencia';
+import DetalleOrden from './components/DetalleOrden'
+import DetalleTransferencia from  './components/DetalleTransferencia'
+
 function App() {
   return (<Router>
               <div className="App">
@@ -39,6 +45,14 @@ function App() {
                       <Route path="/usuarios" component={Usuarios} />
                       <Route path="/productos" component={Productos} />
                       <Route path="/vendedor_home" component={Vendedor_home} />
+
+                      <Route path="/repartidor_home" component={repartidor_home} />
+                      <Route path="/repartidor/ordenes" component={repartidor_ordenes} />
+                      <Route path="/repartidor/transferencia" component={repartidor_transferencia} />
+                      <Route path="/Orden/Detalle" component={DetalleOrden} />
+                      <Route path="/Transferencia/Detalle" component={DetalleTransferencia} />
+                      
+
                       <Route path="/roles" component={Roles} />
                       <Route path="/perfil_admin" component={Perfil} />
                       <Route path="/recuperar" component={Recuperar} />
@@ -47,6 +61,7 @@ function App() {
                       <Route path="/ShowExt" component={ShowExt} />
                       <Route path="/ShowInt" component={ShowInt} />
                       <Route path="/UpdateInv" component={UpdateInv} />
+
                     </Switch>
               </div>
           </Router>

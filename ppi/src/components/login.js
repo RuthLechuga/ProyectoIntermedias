@@ -37,7 +37,12 @@ export default class Login extends Component {
                 //pass: 12345678#
                 localStorage.setItem('usuario', JSON.stringify(res.data[0]));
                 this.props.history.push("/vendedor_home");
-            }
+
+            }else if(res.data[0].id_rol==3){
+                localStorage.setItem('usuario', JSON.stringify(res.data[0]));
+                this.props.history.push("/repartidor_home");
+
+
             else if(res.data[0].id_rol==2){
                 //usuario: campa@gmail.com
                 //pass: 123456
@@ -45,6 +50,7 @@ export default class Login extends Component {
                 this.props.history.push("/bodeguero_home");
             }
             else if(res.data[0].id_rol==6){
+
                 //usuario: ruthlechuga.1997@gmail.com
                 //pass: 123456
                 localStorage.setItem('usuario', JSON.stringify(res.data[0]));
