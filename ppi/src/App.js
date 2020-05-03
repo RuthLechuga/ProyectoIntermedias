@@ -16,6 +16,7 @@ import Vendedor_reportes from "./components/vendedor_reportes";
 import Vendedor_ventas from './components/vendedor_ventas';
 import Roles from './components/roles';
 import Perfil from './components/perfil';
+import Recuperar from './components/recuperar_password';
 
 function App() {
   return (<Router>
@@ -35,6 +36,7 @@ function App() {
                       <Route path="/vendedor_home" component={Vendedor_home} />
                       <Route path="/roles" component={Roles} />
                       <Route path="/perfil_admin" component={Perfil} />
+                      <Route path="/recuperar" component={Recuperar} />
                     </Switch>
               </div>
           </Router>

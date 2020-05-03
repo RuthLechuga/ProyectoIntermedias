@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { forwardRef } from 'react';
 import { BrowserRouter as Router} from "react-router-dom";
-import axios from 'axios';
-import MaterialTable from 'material-table';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
@@ -21,6 +19,9 @@ import ViewColumn from '@material-ui/icons/ViewColumn';
 import Button from '@material-ui/core/Button';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import IconButton from '@material-ui/core/IconButton';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import Grid from '@material-ui/core/Grid';
 
 export default class Perfil extends Component {
 
@@ -48,26 +49,32 @@ export default class Perfil extends Component {
         super(props)
 
         this.state = {
-            usuarios: [],
-            roles: [],
-            usuarioSelected: 0,
-            rolSelected: 0
+            dpi: '',
+            nombre: '',
+            fecha_nacimiento: '',
+            correo: '',
+            password: '',
+            usuario: JSON.parse(localStorage.getItem('usuario'))
         }
     }
 
-    componentDidMount() {
-        axios.get('https://proyectopi-server.herokuapp.com/usuario')
-        .then(res => {
-            const usuarios = res.data;
-            this.setState({usuarios});
-        });
-
-        axios.get('https://proyectopi-server.herokuapp.com/roles')
-        .then(res => {
-            const roles = res.data;
-            this.setState({roles});
-        });
+    myChangeHandler = (event) => {
+        let nam = event.target.name;
+        let val = event.target.value;
+        this.setState({[nam]: val});
     }
+
+    componentDidMount() {
+        console.log(this.state.usuario)
+        this.state.dpi = this.state.usuario.dpi;
+        this.state.nombre = ' Prueba :D';
+    }
+
+    modificar(event){
+        console.log('dpi',this.state.dpi);
+        console.log(this.state.usuario);
+    }
+
     render() {
         const style={
             back:{
@@ -94,7 +101,55 @@ export default class Perfil extends Component {
                 
                 <br></br><br></br><br></br><br></br><br></br>
                 <div class="container">
-                    <h2 id="simple-modal-title">Perfil Administrador</h2>
+                    <h2 id="simple-modal-title">Perfil {this.state.nombre}</h2>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">DPI</span>
+                        </div>
+                        <input value={this.state.dpi} name="dpi" type="text" class="form-control" placeholder="DPI" onChange={this.myChangeHandler}></input>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Nombre</span>
+                        </div>
+                        <input name="nombre" type="text" class="form-control" placeholder="nombre" aria-label="nombre" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
+                    </div>
+                    
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <Grid container justify="space-around">
+                            <KeyboardDatePicker
+                                margin="normal"
+                                id="date-picker-dialog"
+                                label="Date picker dialog"
+                                format="yyyy/MM/dd"
+                                value={this.state.date}
+                                onChange={this.handleDateChange}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                }}
+                            />
+                        </Grid>
+                    </MuiPickersUtilsProvider>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Correo</span>
+                        </div>
+                        <input name="correo" type="text" class="form-control" placeholder="correo" aria-label="correo" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Password</span>
+                        </div>
+                        <input name="password" type="text" class="form-control" placeholder="password" aria-label="password" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
+                    </div>
+                    
+                    <br></br><br></br>
+                    <Button onClick={this.modificar.bind(this)} variant="contained" color="primary">Modificar Usuario</Button>
+                    <br></br><br></br><br></br>
                 </div>
             </Router>
         );
