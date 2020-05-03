@@ -11,10 +11,10 @@ import { Container } from '@material-ui/core';
 
 class repartidor_home extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
     }
-    
+
     render() {
         return (
             <Router>
@@ -23,31 +23,43 @@ class repartidor_home extends Component {
                     <Row>
                         <Col md={{ span: 2, offset: 2 }}>
                             <Card style={{ width: '50rem' }}>
-                                    <Card.Body>
-                                        <Card.Title>Ordenes</Card.Title>
-                                        <Card.Text>
-                                            Some quick example text to build on the card title and make up the bulk of
-                                            the card's content.
+                                <Card.Body>
+                                    <Card.Title>Ordenes</Card.Title>
+                                    <Card.Text>
+                                        AQUÍ PUEDE ADMINISTRAR LAS ÓRDENES DISPONIBLES PARA SU ENTREGA
                                 </Card.Text>
-                                        <Button variant="primary">Go somewhere</Button>
-                                    </Card.Body>
+
+                                    <Button
+                                        variant="primary"
+                                        onClick={() => {
+                                            this.props.history.push("/repartidor/ordenes")
+                                        }}>
+                                        VER ORDENES
+                                    </Button>
+                                </Card.Body>
                             </Card>
                         </Col>
                     </Row>
-                        <Row>
-                            <Col md={{ span: 2, offset: 2 }}>
-                                <Card style={{ width: '50rem' }}>
-                                    <Card.Body>
-                                        <Card.Title>Transferencias</Card.Title>
-                                        <Card.Text>
-                                            Some quick example text to build on the card title and make up the bulk of
-                                            the card's content.
-                                        </Card.Text>
-                                        <Button variant="primary">Go somewhere</Button>
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                        </Row>
+                    <Row></Row>
+                    <Row>
+                        <Col md={{ span: 2, offset: 2 }}>
+                            <Card style={{ width: '50rem' }}>
+                                <Card.Body>
+                                    <Card.Title>Transferencias</Card.Title>
+                                    <Card.Text>
+                                        AQUÍ PUEDE ADMINISTRAR LAS TRANSFERENCIAS DISPONIBLES PARA SU ENTREGA
+                                    </Card.Text>
+                                    <Button
+                                        variant="primary"
+                                        onClick={() => {
+                                            this.props.history.push("/repartidor/transferencia")
+                                        }}>
+                                        VER TRANSFERENCIAS
+                                    </Button>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    </Row>
                 </Container>
 
             </Router>

@@ -15,6 +15,12 @@ import Vendedor_clientes from "./components/vendedor_clientes";
 import Vendedor_reportes from "./components/vendedor_reportes";
 import Vendedor_ventas from './components/vendedor_ventas';
 
+import repartidor_home from './components/repartidor_home';
+import repartidor_ordenes from './components/repartidor_ordenes';
+import repartidor_transferencia from './components/repartidor_transferencia';
+import DetalleOrden from './components/DetalleOrden'
+import DetalleTransferencia from  './components/DetalleTransferencia'
+
 function App() {
   return (<Router>
               <div className="App">
@@ -31,6 +37,12 @@ function App() {
                       <Route path="/usuarios" component={Usuarios} />
                       <Route path="/productos" component={Productos} />
                       <Route path="/vendedor_home" component={Vendedor_home} />
+                      <Route path="/repartidor_home" component={repartidor_home} />
+                      <Route path="/repartidor/ordenes" component={repartidor_ordenes} />
+                      <Route path="/repartidor/transferencia" component={repartidor_transferencia} />
+                      <Route path="/Orden/Detalle" component={DetalleOrden} />
+                      <Route path="/Transferencia/Detalle" component={DetalleTransferencia} />
+                      
                     </Switch>
               </div>
           </Router>
