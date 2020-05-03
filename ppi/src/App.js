@@ -14,6 +14,14 @@ import Vendedor_home from "./components/vendedor_home";
 import Vendedor_clientes from "./components/vendedor_clientes";
 import Vendedor_reportes from "./components/vendedor_reportes";
 import Vendedor_ventas from './components/vendedor_ventas';
+import Roles from './components/roles';
+import Perfil from './components/perfil';
+import Recuperar from './components/recuperar_password';
+import Bodega from './components/MBodega/Bodega';
+import RequestTrans from './components/MBodega/RequestTrans/RequestTrans';
+import ShowExt from './components/MBodega/ShowExt/ShowExt';
+import ShowInt from './components/MBodega/ShowInt/ShowInt';
+import UpdateInv from './components/MBodega/UpdateInv/UpdateInv';
 
 import repartidor_home from './components/repartidor_home';
 import repartidor_ordenes from './components/repartidor_ordenes';
@@ -37,12 +45,23 @@ function App() {
                       <Route path="/usuarios" component={Usuarios} />
                       <Route path="/productos" component={Productos} />
                       <Route path="/vendedor_home" component={Vendedor_home} />
+
                       <Route path="/repartidor_home" component={repartidor_home} />
                       <Route path="/repartidor/ordenes" component={repartidor_ordenes} />
                       <Route path="/repartidor/transferencia" component={repartidor_transferencia} />
                       <Route path="/Orden/Detalle" component={DetalleOrden} />
                       <Route path="/Transferencia/Detalle" component={DetalleTransferencia} />
                       
+
+                      <Route path="/roles" component={Roles} />
+                      <Route path="/perfil_admin" component={Perfil} />
+                      <Route path="/recuperar" component={Recuperar} />
+                      <Route path="/bodeguero_home" component={Bodega} />
+                      <Route path="/RequestTran" component={RequestTrans} />
+                      <Route path="/ShowExt" component={ShowExt} />
+                      <Route path="/ShowInt" component={ShowInt} />
+                      <Route path="/UpdateInv" component={UpdateInv} />
+
                     </Switch>
               </div>
           </Router>

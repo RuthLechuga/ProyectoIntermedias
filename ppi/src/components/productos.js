@@ -55,6 +55,9 @@ export default class Productos extends Component {
                 { title: 'PRECIO', field: 'precio'},
             ],
             data: [],
+            categorias: [],
+            categoriaSelected: 0,
+            productoSelected: 0,
             nombre: '',
             descripcion: '',
             precio: 0.0
@@ -72,6 +75,26 @@ export default class Productos extends Component {
         .then(res => {
             const data = res.data;
             this.setState({data});
+        });
+
+        axios.get('https://proyectopi-server.herokuapp.com/categoria')
+        .then(res => {
+            const categorias = res.data;
+            this.setState({categorias});
+        });
+    }
+
+    asignar(event){
+        const params = {
+            "id_producto": this.state.productoSelected,
+            "id_categoria": this.state.categoriaSelected
+        }
+
+        console.log(params);
+        
+        axios.post('https://proyectopi-server.herokuapp.com/detalle_productocategoria',params)
+        .then(res => {
+            alert('Asignado exitosamente');
         });
     }
 
@@ -162,6 +185,68 @@ export default class Productos extends Component {
                     />
                 </div>
                 <br></br><br></br>
+                <div class="container">
+                    <h2 id="simple-modal-title">Asignar Categoria</h2>
+
+                    <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Producto</span>
+                            </div>
+                            <select
+                                class="form-control"
+                                value={this.state.productoSelected}
+                                onChange={e =>
+                                    this.setState({
+                                    productoSelected: e.target.value,
+                                    validationError:
+                                        e.target.value === ""
+                                        ? "You must select your favourite team"
+                                        : ""
+                                    })
+                                }
+                                >
+                                {this.state.data.map(producto => (
+                                    <option
+                                    key={producto.id_producto}
+                                    value={producto.id_producto}
+                                    >
+                                    {producto.nombre}
+                                    </option>
+                                ))}
+                            </select>
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Categoria</span>
+                        </div>
+                        <select
+                            class="form-control"
+                            value={this.state.categoriaSelected}
+                            onChange={e =>
+                                this.setState({
+                                categoriaSelected: e.target.value,
+                                validationError:
+                                    e.target.value === ""
+                                    ? "You must select your favourite team"
+                                    : ""
+                                })
+                            }
+                            >
+                            {this.state.categorias.map(categoria => (
+                                <option
+                                key={categoria.id_categoria}
+                                value={categoria.id_categoria}
+                                >
+                                {categoria.nombre}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <br></br><br></br>
+                    <Button onClick={this.asignar.bind(this)} variant="contained" color="primary">Asignar Categoria</Button>
+                    <br></br><br></br><br></br>
+                </div>
             </Router>
         );
     }
