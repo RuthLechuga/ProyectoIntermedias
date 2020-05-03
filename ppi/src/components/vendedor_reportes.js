@@ -36,7 +36,7 @@ export default class Vendedor_reportes extends Component {
         }
         this.state.allData=items;
         
-        //this.setState({data:this.agrupar(items,0)})
+        this.state.data=this.agrupar(items,2);
     }
     componentDidMount () {
         
@@ -90,13 +90,13 @@ export default class Vendedor_reportes extends Component {
                 display: "flex"
             },
             slider:{
-                flex: "30%",
+                flex: "20%",
                 height:300,
                 margin:"auto"
             },
             grafica:{
-                flex: "70%",
-                height:500
+                flex: "50%",
+                height:400
             }
         }
         const marksG=[{value:0,label:"Lineas"},{value:1,label:"Barras"},{value:2,label:"Dona"}]
@@ -107,9 +107,9 @@ export default class Vendedor_reportes extends Component {
         }
         const onDate = (event,value)=>{
             this.setState({date:value})
-            console.log(this.state.allData)
+            //console.log(this.state.allData)
             this.setState({data:this.agrupar(this.state.allData,value)})
-            console.log(this.state.allData)
+            //console.log(this.state.allData)
         }
 
         return (
@@ -179,11 +179,51 @@ export default class Vendedor_reportes extends Component {
  * 
  */
 function Graph(props){
-    console.log(props.group)
     let datos=props.data;
-    
-
-
+    let grupo=props.group
+    let getLabel=(datum)=>{
+        return grupo==0?getAnio(datum.datum):grupo==1?getMes(datum.datum):getDia(datum.datum);
+    }
+    let getAnio=(grup)=>{
+        console.log(grup)
+        return grup.x.getYear()+1900;
+    }
+    let getMes=(grup)=>{
+        let mm;
+        switch(grup.x.getMonth()){
+            case 0: mm="Ene"; break;
+            case 1: mm="Feb"; break;
+            case 2: mm="Mar"; break;
+            case 3: mm="Abr"; break;
+            case 4: mm="May"; break;
+            case 5: mm="Jun"; break;
+            case 6: mm="Jul"; break;
+            case 7: mm="Ago"; break;
+            case 8: mm="Sep"; break;
+            case 9: mm="Oct"; break;
+            case 10: mm="Nov"; break;
+            case 11: mm="Dic"; break;
+        }
+        return (grup.x.getYear()+1900)+"-"+mm;
+    }
+    let getDia=(grup)=>{
+        let mm;
+        switch(grup.x.getMonth()){
+            case 0: mm="Ene"; break;
+            case 1: mm="Feb"; break;
+            case 2: mm="Mar"; break;
+            case 3: mm="Abr"; break;
+            case 4: mm="May"; break;
+            case 5: mm="Jun"; break;
+            case 6: mm="Jul"; break;
+            case 7: mm="Ago"; break;
+            case 8: mm="Sep"; break;
+            case 9: mm="Oct"; break;
+            case 10: mm="Nov"; break;
+            case 11: mm="Dic"; break;
+        }
+        return (grup.x.getYear()+1900)+"-"+mm+"-"+grup.x.getDay()
+    }
 
     switch(props.grafica){
         case 0:{                                                          //grafica de linea
@@ -207,13 +247,14 @@ function Graph(props){
         }
         case 1:{                                                        //grafica de barras
             const styles={
-                data: { stroke: "#c43a31" },
+                data: { black: "#c43a31",fill: "#c43a31",strokeWidth: 2 },
                 parent: { border: "1px solid #ccc"}
             }
             return(
                 <VictoryChart theme={VictoryTheme.material}>
                     <VictoryBar
                         style={styles}
+                        colorScale="qualitative"
                         data={datos}
                         animate={{
                             duration: 2000,
@@ -225,17 +266,24 @@ function Graph(props){
         }
         case 2:{                                                        //grafica de pie
             return(
-                <VictoryPie  
-                    data={datos}
-                    innerRadius={80}
-                    animate={{
-                        duration: 2000,
-                        onLoad: { duration: 1000 }
-                    }}
-                />
-                
+                    <VictoryPie  
+                        data={datos}
+                        colorScale="qualitative"
+                        innerRadius={80}
+                        animate={{
+                            duration: 2000,
+                            onLoad: { duration: 1000 }
+                        }}
+                        labels={getLabel}
+                        labelRadius={({ innerRadius }) => innerRadius + 15 }
+                        style={{ labels: { fill: "white", fontSize: 20, fontWeight: "bold" } }}
+                    />
             )
         }
     }
     
 }
+
+
+
+//const marksT=[{value:0,label:"Año"},{value:1,label:"Mes"},{value:2,label:"Día"}]
