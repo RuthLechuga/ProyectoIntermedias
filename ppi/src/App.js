@@ -17,6 +17,11 @@ import Vendedor_ventas from './components/vendedor_ventas';
 import Roles from './components/roles';
 import Perfil from './components/perfil';
 import Recuperar from './components/recuperar_password';
+import Bodega from './components/MBodega/Bodega';
+import RequestTrans from './components/MBodega/RequestTrans/RequestTrans';
+import ShowExt from './components/MBodega/ShowExt/ShowExt';
+import ShowInt from './components/MBodega/ShowInt/ShowInt';
+import UpdateInv from './components/MBodega/UpdateInv/UpdateInv';
 
 function App() {
   return (<Router>
@@ -37,6 +42,11 @@ function App() {
                       <Route path="/roles" component={Roles} />
                       <Route path="/perfil_admin" component={Perfil} />
                       <Route path="/recuperar" component={Recuperar} />
+                      <Route path="/bodeguero_home" component={Bodega} />
+                      <Route path="/RequestTran" component={RequestTrans} />
+                      <Route path="/ShowExt" component={ShowExt} />
+                      <Route path="/ShowInt" component={ShowInt} />
+                      <Route path="/UpdateInv" component={UpdateInv} />
                     </Switch>
               </div>
           </Router>
