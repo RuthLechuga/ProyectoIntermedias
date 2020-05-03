@@ -218,7 +218,7 @@ export default class Vendedor_ventas extends Component {
             for(let i of this.state.rows){
                 detalle_venta.id_producto=i.id_producto;
                 detalle_venta.cantidad=i.cantidad;
-                detalle_venta.precio=i.precio;
+                detalle_venta.precio_venta=i.precio;
                 axios.post('https://proyectopi-server.herokuapp.com/detalle_venta',detalle_venta).then((res)=>{
                     console.log(res)
                 })
@@ -512,7 +512,7 @@ function SimpleDialog(props){
             <DialogTitle id="simple-dialog-title">Elija una cantidad</DialogTitle>
             <TextField type="number" id="standard-basic" label="Cantidad" style={styles.num} inputProps={{min:"1"}} defaultValue={1} onChange={onCambio}/>
             <DialogActions>
-                <Button onClick={handleClose} color="warning">
+                <Button onClick={handleClose} color="secondary">
                     Cancelar
                 </Button>
                 <Button onClick={onCerrar} color="primary" autoFocus>
