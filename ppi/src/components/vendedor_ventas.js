@@ -203,6 +203,8 @@ export default class Vendedor_ventas extends Component {
     submit=()=>{
         //console.log("Se ha realizado la venta exitosamente de Q "+this.getTotal())
         this.setState({abrir:!this.state.abrir})
+
+
         let venta={
             fecha_facturacion:this.getToday(),
             fecha_entrega:this.state.envio?this.getNextWeek():null,
@@ -210,24 +212,32 @@ export default class Vendedor_ventas extends Component {
             id_usuario:this.usuario.id_usuario
         }
         let v=0;
+        
         axios.post('https://proyectopi-server.herokuapp.com/venta',venta).then(res=>{
-            console.log(res)
+            //console.log(res)
             v=res.data.insertId;
+            
+            console.log(v)
         }).then(()=>{
             let detalle_venta={id_venta:v}
             for(let i of this.state.rows){
+                
                 detalle_venta.id_producto=i.id_producto;
-                detalle_venta.cantidad=i.cantidad;
+                detalle_venta.cantidad=parseInt(i.cantidad);
                 detalle_venta.precio_venta=i.precio;
-                axios.post('https://proyectopi-server.herokuapp.com/detalle_venta',detalle_venta).then((res)=>{
-                    console.log(res)
-                })
+                console.log(detalle_venta)
+                if(this.state.rows[0]==i)
+                    axios.post('https://proyectopi-server.herokuapp.com/detalle_venta',detalle_venta).then((res)=>{
+                        console.log(res)
+                    })
+                
             }
         })
         
+        
     }
     getToday(){
-        let newDate = new Date()
+        let newDate = new Date() //AAAA-MM-DD
         let date = newDate.getDate();
         let month = newDate.getMonth() + 1;
         let year = newDate.getFullYear();
@@ -471,7 +481,7 @@ export default class Vendedor_ventas extends Component {
                         <InputLabel>Cliente</InputLabel>
                         <Select style={styles.clientes} value={this.state.cliente} onChange={this.onCliente} >
                             {this.state.clientes.map((cliente)=>(
-                                <MenuItem value={cliente.id_cliente}>{cliente.id_cliente+" - "+cliente.nombre}</MenuItem>
+                                <MenuItem value={cliente.id_cliente} key={cliente.id_cliente}>{cliente.id_cliente+" - "+cliente.nombre}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>

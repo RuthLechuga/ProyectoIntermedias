@@ -7,43 +7,43 @@ import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 import axios from 'axios';
 import * as V from 'victory';
-import { VictoryBar, VictoryLine, VictoryPie,VictoryTheme,VictoryChart,VictoryAxis,VictoryLabel } from 'victory';
+import { VictoryBar, VictoryLine, VictoryPie,VictoryTheme,VictoryChart,VictoryAxis,VictoryLabel,VictoryStack } from 'victory';
 
 export default class Vendedor_reportes extends Component {
     constructor(props){
         super(props);
         this.state={
             allData:[],
+            allVendedores:[],
             grafica:0,
             date:2,
-            data:[]
+            data:[],
+            vendedores:[]
 
-            
         }
         let date=[
-            {fecha:"2019-12-19",total:1},
-            {fecha:"2020-01-03",total:3},
-            {fecha:"2020-02-05",total:4},
-            {fecha:"2020-02-07",total:6},
-            {fecha:"2020-03-09",total:2},
-            {fecha:"2020-04-19",total:8},
-            {fecha:"2020-04-09",total:10}
+            //{fecha:"2019-12-19",total:1},
+            //{fecha:"2020-01-03",total:3},
+            //{fecha:"2020-02-05",total:4},
+            //{fecha:"2020-02-07",total:6},
+            //{fecha:"2020-03-09",total:2},
+            //{fecha:"2020-04-19",total:8},
+            //{fecha:"2020-04-09",total:10}
         ]
 
-        let items=[];
-        for(let i of date){
-            items.push({x:new Date(i.fecha),y:i.total})
-        }
-        this.state.allData=items;
         
-        this.state.data=this.agrupar(items,2);
     }
     componentDidMount () {
-        
-        
-        
-        
-        
+        axios.get('https://proyectopi-server.herokuapp.com/totalsales').then(res=>{
+            this.setState({allData:res.data})
+            let items=[];
+            for(let i of res.data){
+                items.push({x:new Date(i.fecha),y:i.total})
+            }
+            this.state.allData=items;
+            
+            this.setState({data:this.agrupar(items,2)})
+        })
     }
     agrupar(items,agrupador){
         let datos=[];
@@ -79,7 +79,6 @@ export default class Vendedor_reportes extends Component {
         //console.log(datos)
         return datos;
     }
-
 
     render() {
         const style={
@@ -163,6 +162,14 @@ export default class Vendedor_reportes extends Component {
                             min={0}
                             max={2}
                         />
+                    </div>
+                </div>
+                <br/>
+                <br/>
+                <br/>
+                <div style={style.contenedor}>
+                    <div style={{flex: "20%",margin:"auto"}}>
+                        <p>FIn del reporte</p>
                     </div>
                 </div>
             </Router>
@@ -284,6 +291,28 @@ function Graph(props){
     
 }
 
+function ChartVendedores(props){
+    let dataset=props.data
+
+
+    return (
+        <div>
+            <VictoryChart height={400} width={400} domainPadding={{ x: 30, y: 20 }}>
+                <VictoryStack colorScale="qualitative">
+                    {dataset.map((data, i) => {
+                        return <VictoryBar data={data} key={i}/>;
+                    })}
+                </VictoryStack>
+                <VictoryAxis dependentAxis
+                    tickFormat={(tick) => `${tick}`}
+                />
+                <VictoryAxis
+                    tickFormat={(tick) => `${tick}`}
+                />
+            </VictoryChart>
+        </div>
+    );
+}
 
 
 //const marksT=[{value:0,label:"Año"},{value:1,label:"Mes"},{value:2,label:"Día"}]
