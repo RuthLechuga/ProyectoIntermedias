@@ -237,18 +237,18 @@ export default class Vendedor_ventas extends Component {
         
     }
     getToday(){
-        let newDate = new Date() //AAAA-MM-DD
-        let date = newDate.getDate();
-        let month = newDate.getMonth() + 1;
-        let year = newDate.getFullYear();
+        let newDate = new Date("2020-03-30") //AAAA-MM-DD
+        let date = newDate.getUTCDate();
+        let month = newDate.getUTCMonth() + 1;
+        let year = newDate.getUTCFullYear();
         return `${year}-${month<10?`0${month}`:`${month}`}-${date}`
     }
     getNextWeek(){
         let dia=new Date()
         let newDate = new Date(dia.getTime() + 7 * 24 * 60 * 60 * 1000)
-        let date = newDate.getDate();
-        let month = newDate.getMonth() + 1;
-        let year = newDate.getFullYear();
+        let date = newDate.getUTCDate();
+        let month = newDate.getUTCMonth() + 1;
+        let year = newDate.getUTCFullYear();
         return `${year}-${month<10?`0${month}`:`${month}`}-${date}`
     }
     render() {

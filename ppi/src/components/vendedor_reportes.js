@@ -197,7 +197,7 @@ function Graph(props){
     }
     let getMes=(grup)=>{
         let mm;
-        switch(grup.x.getMonth()){
+        switch(grup.x.getUTCMonth()){
             case 0: mm="Ene"; break;
             case 1: mm="Feb"; break;
             case 2: mm="Mar"; break;
@@ -215,7 +215,7 @@ function Graph(props){
     }
     let getDia=(grup)=>{
         let mm;
-        switch(grup.x.getMonth()){
+        switch(grup.x.getUTCMonth()){
             case 0: mm="Ene"; break;
             case 1: mm="Feb"; break;
             case 2: mm="Mar"; break;
@@ -229,7 +229,7 @@ function Graph(props){
             case 10: mm="Nov"; break;
             case 11: mm="Dic"; break;
         }
-        return (grup.x.getYear()+1900)+"-"+mm+"-"+grup.x.getDay()
+        return (grup.x.getYear()+1900)+"-"+mm+"-"+grup.x.getUTCDate()
     }
 
     switch(props.grafica){
