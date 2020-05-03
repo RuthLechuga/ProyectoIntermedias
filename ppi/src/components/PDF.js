@@ -132,9 +132,9 @@ export class PDF {
                             </View> 
                         </View> 
                         <View style={styles.divider}></View> 
-                            {this.productos.map((row)=>{
+                            {this.productos.map((row,i)=>{
                                 return(
-                                    <View style={styles.tableRow}> 
+                                    <View style={styles.tableRow} key={i}> 
                                         <View style={styles.tableCol}> 
                                             <Text style={styles.tableCell}>{row.id_producto}</Text> 
                                         </View> 
