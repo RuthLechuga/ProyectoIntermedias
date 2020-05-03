@@ -81,7 +81,7 @@ export default class Home extends Component {
                             <h5 className="card-title">Administrar Roles</h5>
                             <p className="card-text">Asignar y quitar roles a usuarios</p>
                             
-                            <a href="sedes" class="btn btn-light">Ver información</a>
+                            <a href="roles" class="btn btn-light">Ver información</a>
                         </div>
                         </div>
                     </div>
@@ -90,7 +90,7 @@ export default class Home extends Component {
                         <div class="card-body">
                             <h5 class="card-title">Ver Perfil</h5>
                             <p class="card-text">Ver y actualizar el perfil de usuario</p>
-                            <a href="usuarios" class="btn btn-light">Ver información</a>
+                            <a href="perfil_admin" class="btn btn-light">Ver información</a>
                         </div>
                         </div>
                     </div>
