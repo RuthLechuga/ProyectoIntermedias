@@ -22,6 +22,7 @@ import IconButton from '@material-ui/core/IconButton';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import Grid from '@material-ui/core/Grid';
+import axios from 'axios';
 
 export default class Perfil extends Component {
 
@@ -49,14 +50,20 @@ export default class Perfil extends Component {
         super(props)
 
         this.state = {
-            dpi: '',
-            nombre: '',
-            fecha_nacimiento: '',
-            correo: '',
-            password: '',
-            usuario: JSON.parse(localStorage.getItem('usuario'))
+            id_usuario: JSON.parse(localStorage.getItem('usuario')).id_usuario,
+            dpi: JSON.parse(localStorage.getItem('usuario')).dpi,
+            nombre: JSON.parse(localStorage.getItem('usuario')).nombre,
+            fecha_nacimiento: JSON.parse(localStorage.getItem('usuario')).fecha_nacimiento,
+            correo: JSON.parse(localStorage.getItem('usuario')).correo,
+            password: JSON.parse(localStorage.getItem('usuario')).password,
         }
+
+        console.log(localStorage.getItem('usuario'));
     }
+
+    handleDateChange = (fecha_nacimiento) => {
+        this.setState({fecha_nacimiento});
+    };
 
     myChangeHandler = (event) => {
         let nam = event.target.name;
@@ -64,15 +71,25 @@ export default class Perfil extends Component {
         this.setState({[nam]: val});
     }
 
-    componentDidMount() {
-        console.log(this.state.usuario)
-        this.state.dpi = this.state.usuario.dpi;
-        this.state.nombre = ' Prueba :D';
-    }
-
     modificar(event){
-        console.log('dpi',this.state.dpi);
-        console.log(this.state.usuario);
+        const params = {
+            id_usuario: this.state.id_usuario,
+            dpi: this.state.dpi,
+            nombre: this.state.nombre,
+            fecha_nacimiento: this.state.fecha_nacimiento,
+            correo: this.state.correo,
+            password: this.state.password
+        }
+
+        console.log(params);
+
+        localStorage.clear();
+        localStorage.setItem('usuario',JSON.stringify(params));
+
+        axios.put('https://proyectopi-server.herokuapp.com/usuario',params)
+        .then(res => {
+            alert('Datos modificados correctamente');
+        });
     }
 
     render() {
@@ -114,7 +131,7 @@ export default class Perfil extends Component {
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">Nombre</span>
                         </div>
-                        <input name="nombre" type="text" class="form-control" placeholder="nombre" aria-label="nombre" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
+                        <input value={this.state.nombre} name="nombre" type="text" class="form-control" placeholder="nombre" aria-label="nombre" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
                     </div>
                     
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -124,7 +141,7 @@ export default class Perfil extends Component {
                                 id="date-picker-dialog"
                                 label="Date picker dialog"
                                 format="yyyy/MM/dd"
-                                value={this.state.date}
+                                value={this.state.fecha_nacimiento}
                                 onChange={this.handleDateChange}
                                 KeyboardButtonProps={{
                                     'aria-label': 'change date',
@@ -137,14 +154,14 @@ export default class Perfil extends Component {
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">Correo</span>
                         </div>
-                        <input name="correo" type="text" class="form-control" placeholder="correo" aria-label="correo" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
+                        <input value={this.state.correo} name="correo" type="text" class="form-control" placeholder="correo" aria-label="correo" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
                     </div>
                     
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">Password</span>
                         </div>
-                        <input name="password" type="text" class="form-control" placeholder="password" aria-label="password" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
+                        <input value={this.state.password} name="password" type="text" class="form-control" placeholder="password" aria-label="password" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
                     </div>
                     
                     <br></br><br></br>
