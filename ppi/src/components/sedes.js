@@ -55,6 +55,8 @@ export default class Sedes extends Component {
             ],
             data: [],
             municipios: [],
+            usuarios: [],
+            selectedUsuario: 0,
             selectedMunicipio: 0,
             alias: '',
             direccion: '',
@@ -82,6 +84,13 @@ export default class Sedes extends Component {
             this.setState({municipios});
         });
 
+        axios.get('https://proyectopi-server.herokuapp.com/usuario')
+        .then(res => {
+            console.log(res);
+            const usuarios = res.data;
+            this.setState({usuarios});
+        });
+
         console.log(this.state.municipios);
         console.log("id",localStorage.getItem('idUsuario'))
     }
@@ -94,7 +103,7 @@ export default class Sedes extends Component {
         const params = {
             alias: this.state.alias,
             direccion: this.state.direccion,
-            id_usuario: this.state.id_usuario,
+            id_usuario: this.state.selectedUsuario,
             id_municipio: this.state.selectedMunicipio
         }
 
@@ -186,29 +195,63 @@ export default class Sedes extends Component {
                         </div>
                         <input name="direccion" type="text" class="form-control" placeholder="Direccion" aria-label="direccion" aria-describedby="basic-addon1" onChange={this.myChangeHandler}></input>
                     </div>
-                    
-                    <select
-                        class="form-control form-control-sm"
-                        value={this.state.selectedMunicipio}
-                        onChange={e =>
-                            this.setState({
-                            selectedMunicipio: e.target.value,
-                            validationError:
-                                e.target.value === ""
-                                ? "You must select your favourite team"
-                                : ""
-                            })
-                        }
-                        >
-                        {this.state.municipios.map(municipio => (
-                            <option
-                            key={municipio.id_municipio}
-                            value={municipio.id_municipio}
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Sede</span>
+                        </div>
+                        <select
+                            class="form-control"
+                            value={this.state.selectedMunicipio}
+                            onChange={e =>
+                                this.setState({
+                                selectedMunicipio: e.target.value,
+                                validationError:
+                                    e.target.value === ""
+                                    ? "You must select your favourite team"
+                                    : ""
+                                })
+                            }
                             >
-                            {municipio.nombre}
-                            </option>
+                            {this.state.municipios.map(municipio => (
+                                <option
+                                key={municipio.id_municipio}
+                                value={municipio.id_municipio}
+                                >
+                                {municipio.nombre}
+                                </option>
                         ))}
-                    </select>
+                        </select>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Encargado</span>
+                        </div>
+                        <select
+                            class="form-control"
+                            value={this.state.selectedUsuario}
+                            onChange={e =>
+                                this.setState({
+                                selectedUsuario: e.target.value,
+                                validationError:
+                                    e.target.value === ""
+                                    ? "You must select your favourite team"
+                                    : ""
+                                })
+                            }
+                            >
+                            {this.state.usuarios.map(usuario => (
+                                <option
+                                key={usuario.id_usuario}
+                                value={usuario.id_usuario}
+                                >
+                                {usuario.nombre}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+            
                     <br></br><br></br>
                     <Button onClick={this.crear.bind(this)} variant="contained" color="primary">Crear Sede</Button>
                     <br></br><br></br><br></br>
